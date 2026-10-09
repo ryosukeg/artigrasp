@@ -237,7 +237,7 @@ def label_eval_floating(obj_name, test):
 	grasp_labels_list = []
 
 	for label_item in original_seqs:
-		if label_item["kind"] == "right_arti":
+		if label_item["kind"] in ("right_arti", "left_arti", "left_special"):
 			if label_item["obj_name"] != "mixer" and label_item["obj_name"] != "ketchup" and label_item[
 				"obj_name"] != "phone":
 				arti_labels_list.append(label_item)

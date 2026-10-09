@@ -6,6 +6,8 @@ from raisimGymTorch.env.bin.fixed_arti_evaluation import NormalSampler
 import os.path as op
 
 import os
+import sys
+import json
 import time
 import raisimGymTorch.algo.ppo.module as ppo_module
 import raisimGymTorch.algo.ppo.ppo as PPO
@@ -51,6 +53,10 @@ parser.add_argument('-debug', '--debug', action="store_true")
 parser.add_argument('-lr', '--log_rewards', action="store_true")
 parser.add_argument('-obj', '--obj', help='which obj to test', type=str, default="box")
 parser.add_argument('-test', '--test_set', help='test or train set', action="store_true")
+parser.add_argument('-select', '--select', type=str, default=None,
+                    help='comma-separated label:env pairs; run only these, with that env shown as env 0')
+parser.add_argument('-video', '--video', action="store_true", help='record each selected episode via RaisimUnity')
+parser.add_argument('-select_out', '--select_out', type=str, default=None, help='json file for selected episode results')
 
 args = parser.parse_args()
 mode = args.mode
@@ -105,6 +111,12 @@ else:
     print("train set")
 
 arti_labels_list = label_gen_final.label_eval_fixed(obj_name, test)
+
+if args.select:
+    selection = [tuple(int(v) for v in pair.split(':')) for pair in args.select.split(',')]
+else:
+    selection = [(label_idx, 0) for label_idx in range(len(arti_labels_list))]
+episodes = []
 arti_label = []
 for env_id in range(num_envs):
     arti_label.append(arti_labels_list[0])
@@ -195,7 +207,9 @@ final_ave_error_all = np.zeros((num_envs, 1), 'float32')
 succeed = np.zeros((num_envs, 1), 'float32')
 succeed_once = np.zeros((num_envs, 1), 'float32')
 
-for update in range(len(arti_labels_list)):
+for update, sel_env in selection:
+    # only env 0 is visualized, so rotate the per-env targets to put the selected trial there
+    perm = np.roll(np.arange(num_envs), -sel_env)
     start = time.time()
     reward_angle_sum = np.zeros((num_envs, 1), 'float32')
     opened = np.zeros((num_envs, 1), 'float32')
@@ -239,7 +253,7 @@ for update in range(len(arti_labels_list)):
     ### Add some noise to goal angle
     random_noise_angle = final_obj_angle.copy()
     for i in range(num_envs):
-        random_noise_angle[i] = 0.5 + i * 1 / (num_envs - 1)
+        random_noise_angle[i] = 0.5 + perm[i] * 1 / (num_envs - 1)
 
     env.set_goals(random_noise_angle,
                   final_obj_pos,
@@ -269,6 +283,10 @@ for update in range(len(arti_labels_list)):
 
     env.control_switch_all(left_kinds, right_kinds)
 
+    video_name = f"fixed_{obj_name}_label{update}_env{sel_env}.mp4"
+    if args.video:
+        env.start_video_recording(video_name)
+
     for step in range(n_steps_r):
         obs_r, _ = env.observe()
         obs_r = obs_r[:, :].astype('float32')
@@ -293,6 +311,11 @@ for update in range(len(arti_labels_list)):
         if wait_time > 0.:
             time.sleep(wait_time)
 
+    if args.video:
+        env.stop_video_recording()
+        # give RaisimUnity time to finalize the file before the next recording starts
+        time.sleep(3)
+
     print("end")
     opened -= (obs_r[:, 3] > 2).reshape(-1, 1) * opened
     print("succeed once: ", opened.transpose())
@@ -304,6 +327,17 @@ for update in range(len(arti_labels_list)):
     final_ave_error += np.abs(obs_r[:, -1]).reshape(-1, 1) * opened * current_opened_state
     final_ave_error_once += np.abs(obs_r[:, -1]).reshape(-1, 1) * opened
     final_ave_error_all += np.abs(obs_r[:, -1]).reshape(-1, 1)
+
+    episodes.append({"label": update, "env": sel_env, "video": video_name if args.video else None,
+                     "seq_name": arti_labels_list[update]["seq_name"], "kind": arti_labels_list[update]["kind"],
+                     "success": float((opened * current_opened_state)[0, 0]), "success_once": float(opened[0, 0])})
+
+if args.select:
+    if args.select_out:
+        with open(args.select_out, 'w') as f:
+            json.dump(episodes, f, indent=1)
+    # partial runs must not overwrite data_all/evaluation_result
+    sys.exit(0)
 
 print(" ")
 print("succeed once rate: ", (succeed_once / len(arti_labels_list)).transpose())

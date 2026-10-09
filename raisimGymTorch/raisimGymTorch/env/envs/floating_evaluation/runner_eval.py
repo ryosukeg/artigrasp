@@ -6,7 +6,10 @@ from raisimGymTorch.env.bin.floating_evaluation import NormalSampler
 import os.path as op
 
 import os
+import sys
+import json
 import time
+import subprocess
 import raisimGymTorch.algo.ppo.module as ppo_module
 import raisimGymTorch.algo.ppo.ppo as PPO
 import torch.nn as nn
@@ -59,6 +62,28 @@ parser.add_argument('-obj', '--obj', help='which obj to test', type=str, default
 parser.add_argument('-test', '--test_set', help='test or train set', action="store_true")
 parser.add_argument('-grasp', '--grasp', action="store_true")
 parser.add_argument('-record', '--record', help='record the state', action="store_true")
+parser.add_argument('-select', '--select', type=str, default=None,
+                    help='comma-separated label:env pairs; run only these, with that env shown as env 0')
+parser.add_argument('-video', '--video', action="store_true", help='record each selected episode via RaisimUnity')
+parser.add_argument('-select_out', '--select_out', type=str, default=None, help='json file for selected episode results')
+parser.add_argument('-wait_unity', '--wait_unity', action="store_true", help='block each episode until RaisimUnity connects to port 8080')
+parser.add_argument('-trace', '--trace', type=str, default=None, help='dir to save per-step global_state of env 0 (one .npy per episode)')
+parser.add_argument('-slow', '--slow', type=float, default=1.0, help='slow-motion factor for the real-time wait per step')
+parser.add_argument('-angles', '--angles', type=str, default=None,
+                    help='arti only: comma-separated goal angles [rad], one per env (5); -select label:k shows angles[k] as env 0')
+parser.add_argument('-lift', '--lift', type=float, default=None,
+                    help='grasp only: goal height above the start [m]; replaces the default 0.3 and the pos_bias offset')
+parser.add_argument('-rot', '--rot', type=str, default=None,
+                    help='grasp only: goal euler offset "x,y,z" [rad]; replaces angle_bias')
+parser.add_argument('-xy_scale', '--xy_scale', type=float, default=None,
+                    help='grasp only: scale of the xy part of pos_bias; any scale arg switches to sampled-bias mode (-lift = z centre, default 0.3)')
+parser.add_argument('-z_scale', '--z_scale', type=float, default=None, help='grasp only: scale of the z part of pos_bias')
+parser.add_argument('-rot_scale', '--rot_scale', type=float, default=None, help='grasp only: scale of angle_bias')
+parser.add_argument('-episodes_out', '--episodes_out', type=str, default=None,
+                    help='json for per-env results of every label; runs all labels and exits without writing evaluation_result')
+parser.add_argument('-headless', '--headless', action="store_true", help='disable the RaiSim visualization server (allows parallel runs)')
+parser.add_argument('-threads', '--threads', type=int, default=None, help='override num_threads of the simulator')
+parser.add_argument('-max_labels', '--max_labels', type=int, default=None, help='evaluate an evenly spaced subset of this many labels')
 
 args = parser.parse_args()
 mode = args.mode
@@ -83,6 +108,10 @@ else:
 
 # config
 cfg = YAML().load(open(task_path + '/cfgs/' + args.cfg, 'r'))
+if args.headless:
+    cfg['environment']['render'] = False
+if args.threads:
+    cfg['environment']['num_threads'] = args.threads
 
 if args.seed != 1:
     cfg['seed'] = args.seed
@@ -130,6 +159,20 @@ if exp == "arti":
     label_list = arti_labels_list
 else:
     label_list = grasp_labels_list
+
+if args.max_labels and len(label_list) > args.max_labels:
+    label_list = [label_list[i] for i in np.linspace(0, len(label_list) - 1, args.max_labels).round().astype(int)]
+
+if args.select:
+    selection = [tuple(int(v) for v in pair.split(':')) for pair in args.select.split(',')]
+elif args.episodes_out:
+    selection = [(label_idx, 0) for label_idx in range(len(label_list))]
+elif args.angles and exp == "arti":
+    selection = [(label_idx, k) for label_idx in range(len(label_list)) for k in range(num_envs)]
+else:
+    selection = [(label_idx, 0) for label_idx in range(len(label_list))]
+episodes = []
+env_records = []
 
 shuffle_label = []
 for env_id in range(num_envs):
@@ -265,7 +308,9 @@ if record:
     rot_obj = np.zeros((n_steps_r, 3))
     angle_obj = np.zeros((n_steps_r, 1))
 
-for update in range(len(label_list)):
+for update, sel_env in selection:
+    # only env 0 is visualized, so rotate the per-env targets to put the selected trial there
+    perm = np.roll(np.arange(num_envs), -sel_env)
     start = time.time()
     reward_angle_sum = np.zeros((num_envs, 1), 'float32')
     sim_distance = np.zeros((num_envs, 1), 'float32')
@@ -305,8 +350,11 @@ for update in range(len(label_list)):
     # if args.random:
     random_noise_angle = final_obj_angle2.copy()
     if exp == "arti":
+        goal_angles = [float(v) for v in args.angles.split(',')] if args.angles else None
+        if goal_angles is not None:
+            assert len(goal_angles) == num_envs, f"-angles needs {num_envs} values"
         for i in range(num_envs):
-            random_noise_angle[i] = 0.5 + i * 1 / (num_envs - 1)
+            random_noise_angle[i] = goal_angles[perm[i]] if goal_angles else 0.5 + perm[i] * 1 / (num_envs - 1)
 
     env.set_goals(random_noise_angle,
                   final_obj_pos2,
@@ -321,13 +369,28 @@ for update in range(len(label_list)):
                   )
 
     obj_pos_goal = obj_pose_reset2.copy()
+    sampled_mode = any(s is not None for s in (args.xy_scale, args.z_scale, args.rot_scale))
     if exp == "grasp":
-        obj_pos_goal[:, 2] += 0.3
-        obj_pos_goal[:, :3] += pos_bias
+        if sampled_mode:
+            bias = pos_bias[perm].copy()
+            bias[:, :2] *= 1.0 if args.xy_scale is None else args.xy_scale
+            bias[:, 2] *= 1.0 if args.z_scale is None else args.z_scale
+            obj_pos_goal[:, 2] += 0.3 if args.lift is None else args.lift
+            obj_pos_goal[:, :3] += bias
+        elif args.lift is not None:
+            obj_pos_goal[:, 2] += args.lift
+        else:
+            obj_pos_goal[:, 2] += 0.3
+            obj_pos_goal[:, :3] += pos_bias[perm]
         obj_euler = rotations.quat2euler(obj_pose_reset2[:, 3:7])
-        obj_euler[:, 0] += angle_bias[:, 0]
-        obj_euler[:, 1] += angle_bias[:, 1]
-        obj_euler[:, 2] += angle_bias[:, 2]
+        if sampled_mode:
+            obj_euler += angle_bias[perm] * (1.0 if args.rot_scale is None else args.rot_scale)
+        elif args.rot is not None:
+            obj_euler += np.array([float(v) for v in args.rot.split(',')])[None, :]
+        else:
+            obj_euler[:, 0] += angle_bias[perm, 0]
+            obj_euler[:, 1] += angle_bias[perm, 1]
+            obj_euler[:, 2] += angle_bias[perm, 2]
         obj_pos_goal[:, 3:7] = rotations.euler2quat(obj_euler)
     env.set_obj_goal(random_noise_angle, obj_pos_goal)
 
@@ -354,6 +417,25 @@ for update in range(len(label_list)):
 
     env.control_switch_all(left_kinds, right_kinds)
 
+    if args.wait_unity:
+        print("waiting for RaisimUnity to connect (port 8080)...", flush=True)
+        while len(subprocess.run(['ss', '-tn', 'state', 'established', '( sport = :8080 )'],
+                                 capture_output=True, text=True).stdout.strip().splitlines()) < 2:
+            time.sleep(0.5)
+        time.sleep(3)
+
+    angle_tag = f"_ang{random_noise_angle[0, 0]:.2f}" if args.angles else ""
+    if exp == "grasp":
+        if args.lift is not None:
+            angle_tag += f"_lift{args.lift:.2f}"
+        if args.rot is not None:
+            angle_tag += "_rot" + "_".join(args.rot.split(','))
+    video_name = f"{exp}_{obj_name}_label{update}_env{sel_env}{angle_tag}.mp4"
+    trace_states = []
+    trace_contacts = []
+    if args.video:
+        env.start_video_recording(video_name)
+
     for step in range(n_steps_r):
 
         if step == grasp_steps + trail_steps and exp == "grasp":
@@ -365,6 +447,8 @@ for update in range(len(label_list)):
         obs_l = obs_l.astype('float32')
 
         global_state = env.get_global_state().astype('float32')
+        trace_states.append(global_state[0].copy())
+        trace_contacts.append(np.concatenate([obs_r[0, 216:264], obs_l[0, 216:264]]))  # 目標接触/インパルス/達成(各16) x 右,左
 
         if record:
             trans_r[step, :] = global_state[0, 6:9] - ref_r
@@ -411,7 +495,7 @@ for update in range(len(label_list)):
             opened += current_opened_state - current_opened_state * opened
 
         frame_end = time.time()
-        wait_time = cfg['environment']['control_dt'] - (frame_end - frame_start)
+        wait_time = cfg['environment']['control_dt'] * args.slow - (frame_end - frame_start)
         if wait_time > 0.:
             time.sleep(wait_time)
 
@@ -431,6 +515,16 @@ for update in range(len(label_list)):
         data['laptop']['angle'] = np.float32(angle_obj)
         np.save("./data_all/ours.npy", data)
         print("recorded")
+
+    if args.trace:
+        os.makedirs(args.trace, exist_ok=True)
+        np.save(os.path.join(args.trace, video_name.replace('.mp4', '.npy')), np.array(trace_states))
+        np.save(os.path.join(args.trace, video_name.replace('.mp4', '_contacts.npy')), np.array(trace_contacts))
+
+    if args.video:
+        env.stop_video_recording()
+        # give RaisimUnity time to finalize the file before the next recording starts
+        time.sleep(3)
 
     print("end")
 
@@ -460,6 +554,40 @@ for update in range(len(label_list)):
         succeed_grasp += grasped * current_grasped_state
         final_pos_error += np.abs(global_state[:, 0]).reshape(-1, 1) * grasped * current_grasped_state
         final_angle_error += np.abs(global_state[:, 1]).reshape(-1, 1) * grasped * current_grasped_state
+
+    if exp == "arti":
+        ep_success, ep_once = opened * current_opened_state, opened
+    else:
+        ep_success, ep_once = grasped * current_grasped_state, grasped
+    episodes.append({"label": update, "env": sel_env, "video": video_name if args.video else None,
+                     "seq_name": label_list[update]["seq_name"], "kind": label_list[update]["kind"],
+                     "success": float(ep_success[0, 0]), "success_once": float(ep_once[0, 0]),
+                     "target_angle": float(random_noise_angle[0, 0]) if exp == "arti" else None,
+                     "final_angle": float(global_state[0, 3]), "final_angle_error": float(abs(global_state[0, 4])),
+                     "final_pos_error": float(abs(global_state[0, 0])), "final_ori_error": float(abs(global_state[0, 1]))})
+    if args.episodes_out:
+        for i in range(num_envs):
+            env_records.append({"label": update, "env": i, "seq_name": label_list[update]["seq_name"],
+                                "kind": label_list[update]["kind"],
+                                "success": float(ep_success[i, 0]), "success_once": float(ep_once[i, 0]),
+                                "target_angle": float(random_noise_angle[i, 0]) if exp == "arti" else None,
+                                "final_angle": float(global_state[i, 3]), "final_angle_error": float(abs(global_state[i, 4])),
+                                "final_pos_error": float(abs(global_state[i, 0])),
+                                "final_ori_error": float(abs(global_state[i, 1])),
+                                "sim_distance": float(sim_distance[i, 0] / n_steps_r)})
+
+if args.episodes_out:
+    with open(args.episodes_out, 'w') as f:
+        json.dump({"obj": obj_name, "exp": exp, "test_set": bool(test), "n_labels": len(label_list),
+                   "episodes": env_records}, f)
+    sys.exit(0)
+
+if args.select or args.angles:
+    if args.select_out:
+        with open(args.select_out, 'w') as f:
+            json.dump(episodes, f, indent=1)
+    # partial runs must not overwrite data_all/evaluation_result
+    sys.exit(0)
 
 print(" ")
 result_list = {}

@@ -29,6 +29,16 @@ data/*
 raisimGymTorch/raisimGymTorch/env/bin/
 
 *.png
+*.mp4
+*.csv
+*.h
+*.hpp
+*.so
+*.yaml
+*.yml
+*.pt
+*.txt
+*.npy
 
 *.zip
 
