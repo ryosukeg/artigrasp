@@ -1,0 +1,33 @@
+{
+  "version": 4,
+  "evaluation_protocol": "five_v1",
+  "seed": 1,
+  "split": "test",
+  "samples_per_object": 100,
+  "objects": ["box", "laptop", "notebook", "waffleiron", "mixer", "ketchup", "espressomachine", "microwave", "capsulemachine", "phone"],
+  "normal_goal": {"source": "paper_supplement_b4", "articulation_rad": [0.5, 0.6], "yaw_rad": [-0.4, 0.4]},
+  "default_suite": "five",
+  "suites": {"five": ["horizontal", "height", "orientation", "articulation", "all"]},
+  "profiles": {
+    "horizontal": {"description": "水平移動", "translation_distance_m": [0.3, 0.8], "translation_direction": "control"},
+    "height": {"description": "高さ", "lift_m": [0.6, 0.9]},
+    "orientation": {"description": "向き", "orientation": {"axis": "z", "angle_deg": [60, 90], "frame": "world", "stage": "placement", "signed": true}},
+    "articulation": {"description": "関節角度", "articulation_ood": {"intervals_rad": [[0.2, 0.4], [1.6, 3.0]], "joint_margin_rad": 0.05, "prefer_upper": true}},
+    "all": {"description": "全て", "translation_distance_m": [0.3, 0.8], "translation_direction": "control", "lift_m": [0.6, 0.9], "orientation": {"axis": "z", "angle_deg": [60, 90], "frame": "world", "stage": "placement", "signed": true}, "articulation_ood": {"intervals_rad": [[0.2, 0.4], [1.6, 3.0]], "joint_margin_rad": 0.05, "prefer_upper": true}}
+  },
+  "object_profile_overrides": {
+    "phone": {
+      "articulation": {"articulation_ood": {"intervals_rad": [[2.4, 2.45]], "joint_margin_rad": 0.05, "prefer_upper": true}},
+      "all": {"articulation_ood": {"intervals_rad": [[2.4, 2.45]], "joint_margin_rad": 0.05, "prefer_upper": true}}
+    }
+  },
+  "physics_validation": {"surface_clearance_m": 0.001, "maximum_placement_correction_m": 0.02, "wrist_translation_margin_m": 0.05},
+  "checkpoints": {
+    "cooperative_left": "raisimGymTorch/data_all/general_two/2023-05-15-10-18-54/full_400_l.pt",
+    "cooperative_right": "raisimGymTorch/data_all/general_two/2023-05-15-10-18-54/full_400_r.pt",
+    "articulation_right": "raisimGymTorch/data_all/multi_obj_arti/2023-05-14-16-30-13/full_8600_r.pt"
+  },
+  "runtime": {"batch_size": 100, "num_threads": 24, "device": "cuda"},
+  "videos_per_outcome": 3,
+  "video_metric": "ood_goal_success"
+}

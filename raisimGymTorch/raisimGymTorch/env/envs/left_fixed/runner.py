@@ -1,8 +1,13 @@
+from pathlib import Path
+import sys
+
+# Prefer this checkout even when another ArtiGrasp copy is installed editable.
+sys.path.insert(0, str(Path(__file__).resolve().parents[4]))
+
 from ruamel.yaml import YAML, dump, RoundTripDumper
 from raisimGymTorch.env.bin import left_fixed as mano
 from raisimGymTorch.env.RaisimGymVecEnv import RaisimGymVecEnv as VecEnv
-from raisimGymTorch.helper.raisim_gym_helper import ConfigurationSaver, load_param, tensorboard_launcher
-from raisimGymTorch.env.bin.left_fixed import NormalSampler
+from raisimGymTorch.helper import training_support, training_runtime
 
 import os
 import time
@@ -25,7 +30,6 @@ ref_frame = 0
 height_desk = 0.5
 xpos_desk = 0.3
 
-weight_saved = '/../2023-05-04-16-51-56/full_6600_l.pt'
 
 
 
@@ -35,7 +39,7 @@ parser.add_argument('-c', '--cfg', help='config file', type=str, default='cfg_re
 parser.add_argument('-m', '--mode', help='set mode either train or test', type=str, default='train')
 parser.add_argument('-d', '--logdir', help='set dir for storing data', type=str, default=None)
 parser.add_argument('-e', '--exp_name', help='exp_name', type=str, default=exp_name)
-parser.add_argument('-w', '--weight', type=str, default=weight_saved)
+parser.add_argument('-w', '--weight', type=str, default=None)
 parser.add_argument('-sd', '--storedir', type=str, default='data_all')
 parser.add_argument('-pr', '--prior', action="store_true")
 parser.add_argument('-o', '--obj_id', type=int, default=1)
@@ -54,6 +58,8 @@ parser.add_argument('-random', '--random', help='randomized goal obj angle', act
 parser.add_argument('-re', '--load_trained_policy', action="store_true")
 parser.add_argument('-renew', '--renew', help='update labels every iteration', action="store_true")
 
+training_runtime.add_training_arguments(parser, cooperative=False)
+
 args = parser.parse_args()
 mode = args.mode
 weight_path = args.weight
@@ -65,7 +71,7 @@ print(f"Experiment name: \"{args.exp_name}\"")
 # task specification
 task_name = args.exp_name
 # check if gpu is available
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+# Device and seeds are configured before label sampling and network initialization.
 # directories
 task_path = os.path.dirname(os.path.realpath(__file__))
 home_path = task_path + "/../../../../.."
@@ -76,10 +82,7 @@ else:
     exp_path = args.logdir
 
 # config
-cfg = YAML().load(open(task_path + '/cfgs/' + args.cfg, 'r'))
-
-if args.seed != 1:
-    cfg['seed'] = args.seed
+cfg, seeds, device = training_runtime.configure_training(args, 'left_fixed', task_path)
 
 num_envs = cfg['environment']['num_envs']
 start_offset = 0
@@ -98,7 +101,7 @@ all_train = False
 test_inference = args.test
 train_obj_id = args.obj_id
 
-original_labels_arti, original_labels_grasp, shuffle_label = label_gen_final.label_train_l(num_repeats, False, False)
+original_labels_arti, original_labels_grasp, shuffle_label = training_runtime.select_training_labels('left_fixed', args.objects, num_repeats, label_gen_final)
 processed_data, obj_list, left_kind_list, right_kind_list = label_gen_final.pose_gen(shuffle_label, num_repeats, False)
 print(obj_list)
 print(left_kind_list)
@@ -132,7 +135,8 @@ print('num envs', num_envs)
 
 # Environment definition
 env = VecEnv(mano.RaisimGymEnv(home_path + "/rsc", dump(cfg['environment'], Dumper=RoundTripDumper)),
-             cfg['environment'])
+             cfg['environment'], normalize_ob=False, seed=seeds['environment'])
+env.seed(seeds['environment'])
 
 obj_path_list = []
 for obj_item in obj_list:
@@ -166,7 +170,7 @@ obj_angle_rewards = []
 # RL network
 actor_l = ppo_module.Actor(
     ppo_module.MLP(cfg['architecture']['policy_net'], activations, ob_dim_l, act_dim),
-    ppo_module.MultivariateGaussianDiagonalCovariance(act_dim, num_envs, 1.0, NormalSampler(act_dim)), device)
+    ppo_module.MultivariateGaussianDiagonalCovariance(act_dim, num_envs, 1.0, training_support.NumpyNormalSampler(act_dim), seed=seeds['action_left']), device)
 
 critic_l = ppo_module.Critic(ppo_module.MLP(cfg['architecture']['value_net'], activations, ob_dim_l, 1), device)
 
@@ -175,9 +179,7 @@ if mode == 'retrain':
 else:
     test_dir = False
 
-saver = ConfigurationSaver(log_dir=exp_path + "/raisimGymTorch/" + args.storedir + "/" + task_name,
-                           save_items=[task_path + "/cfgs/" + args.cfg, task_path + "/Environment.hpp",
-                                       task_path + "/runner.py", task_path + "/../../../helper/label_gen_final.py"], test_dir=test_dir)
+saver = training_runtime.create_training_saver(args, exp_path, task_path)
 
 
 ppo_l = PPO.PPO(actor=actor_l,
@@ -193,8 +195,15 @@ ppo_l = PPO.PPO(actor=actor_l,
                 shuffle_batch=False
                 )
 
-if args.load_trained_policy:
-    load_param(saver.data_dir.split('eval')[0]+weight_path, env, actor_l, critic_l, ppo_l.optimizer, saver.data_dir, cfg_grasp)
+checkpoint_sources = {}
+if args.weight:
+    checkpoint_sources['left'] = training_support.load_training_checkpoint(
+        args.weight, actor_l, critic_l, ppo_l.optimizer,
+        load_optimizer=args.load_optimizer)
+training_support.write_training_manifest(
+    saver.data_dir, 'left_fixed', args, cfg, seeds, shuffle_label,
+    processed_data, checkpoints=checkpoint_sources)
+
 
 
 if args.debug:
@@ -237,19 +246,6 @@ for update in range(args.num_iterations):
     done_sum = 0
     average_dones = 0.
 
-    ### Evaluate trained model visually (note always the first environment gets visualized)
-
-    if update % cfg['environment']['eval_every_n'] == 0:
-        print("Visualizing and evaluating the current policy")
-        torch.save({
-            'actor_architecture_state_dict': actor_l.architecture.state_dict(),
-            'actor_distribution_state_dict': actor_l.distribution.state_dict(),
-            'critic_architecture_state_dict': critic_l.architecture.state_dict(),
-            'optimizer_state_dict': ppo_l.optimizer.state_dict(),
-        }, saver.data_dir + "/full_" + str(update) + '_l.pt')
-
-        env.save_scaling(saver.data_dir, str(update))
-
     ### Add some noise to initial hand position
     random_noise_pos = np.float32(np.random.uniform([-0.02, -0.02, 0.01], [0.02, 0.02, 0.01], (num_envs, 3)).copy())
     random_noise_qpos = np.float32(np.random.uniform(-0.05, 0.05, (num_envs, 48)).copy())
@@ -275,12 +271,12 @@ for update in range(args.num_iterations):
     for step in range(n_steps_r):
         obs_r, obs_l = env.observe()
         obs_l = obs_l.astype('float32')
-        if np.isnan(obs_l).any():
-            np.savetxt(saver.data_dir + "/nan_obs.txt", obs_l)
+        training_runtime.ensure_finite(observation_l=obs_l)
         action_l = ppo_l.act(obs_l)
         action_r = np.zeros_like(action_l)
 
         reward_r, reward_l, dones = env.step(action_r.astype('float32'), action_l.astype('float32'))
+        training_runtime.validate_training_step(dones, reward_l=reward_l)
         reward_l.clip(min=reward_clip)
 
         ppo_l.step(value_obs=obs_l, rews=reward_l, dones=dones)
@@ -302,7 +298,11 @@ for update in range(args.num_iterations):
     avg_rewards.append(average_ll_performance)
     ave_angle_rewards.append(average_angle_reward)
 
-    actor_l.distribution.enforce_minimum_std((torch.ones(act_dim) * 0.2).to(device))
+    training_runtime.update_action_distribution(actor_l)
+
+    if (update + 1) % cfg['environment']['eval_every_n'] == 0:
+        training_runtime.save_completed_update(
+            saver, env, update + 1, {'left': (actor_l, critic_l, ppo_l.optimizer)})
 
     end = time.time()
     mean_file_name = saver.data_dir + "/rewards.txt"
@@ -326,8 +326,7 @@ for update in range(args.num_iterations):
     print(np.exp(actor_l.distribution.std.cpu().detach().numpy()))
     print('----------------------------------------------------\n')
 
-    if np.isnan(np.isnan(np.exp(actor_l.distribution.std.cpu().detach().numpy())).any()):
-        print('resetting env')
-        env = VecEnv(mano.RaisimGymEnv(home_path + "/rsc", dump(cfg['environment'], Dumper=RoundTripDumper)),
-                     cfg['environment'])
 
+
+training_runtime.finish_training(
+    saver, env, args, 'left_fixed', seeds, {'left': (actor_l, critic_l, ppo_l.optimizer)})

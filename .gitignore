@@ -45,3 +45,8 @@ raisimGymTorch/raisimGymTorch/env/bin/
 *.pkl
 
 *.jpg
+
+# Local experiment artifacts and Python caches
+__pycache__/
+*.py[cod]
+/results/

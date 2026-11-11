@@ -48,25 +48,48 @@ We provide some pre-trained models to view the output of our method. They are st
 
 ## Training
 
+- For controlled scratch training of all eight paper objects, with explicit
+  checkpoints and reproducible seeds, see [scratch training](docs/SCRATCH_TRAINING.md).
+  Run `python scripts/train_scratch.py --seed 1` from the repository root to
+  inspect the plan; add `--execute` to start the full training schedule.
+
+Run the individual stage commands below from `raisimGymTorch/`. Pretraining
+starts from scratch unless an explicit `--weight` is provided. Cooperation
+loads your own left and right pretraining checkpoints; optimizer state is
+fresh unless `--load-optimizer` is specified.
+
 - For the pre-training phase of the right hand policy with fixed-base objects, run
 
   ```Shell
-  python raisimGymTorch/env/envs/multi_obj_arti/runner.py -re (Load the checkpoint. Otherwise start from scratch)
+  python raisimGymTorch/env/envs/multi_obj_arti/runner.py --headless
   ```
 
 - For the pre-training phase of the left hand policy with fixed-base objects, run
 
   ```Shell
-  python raisimGymTorch/env/envs/left_fixed/runner.py -re (Load the checkpoint. Otherwise start from scratch)
+  python raisimGymTorch/env/envs/left_fixed/runner.py --headless
   ```
 
 - For the fine-tuning phase of two hand policies with free-base objects for cooperation, run
 
   ```Shell
-  python raisimGymTorch/env/envs/general_two/runner.py -re (Load the checkpoint. Otherwise start from scratch)
+  python raisimGymTorch/env/envs/general_two/runner.py --headless \
+    --pretrained-left /path/to/left/full_N_l.pt \
+    --pretrained-right /path/to/right/full_M_r.pt
   ```
 
 ## Evaluation
+
+- The default OOD evaluation now runs the five requested conditions (horizontal,
+  height, orientation, articulation, and all four) with 100 sequences per object.
+  See [five-condition evaluation](docs/OOD_FIVE.md). Results include compact
+  Suc.T / PE / AE / AAE tables and a recorded-state video gallery.
+
+- For the eight combinations of normal / horizontal OOD / lift OOD /
+  articulation OOD (100 samples per object and combination), randomized
+  out-of-range targets, separate paper/public metrics, Markdown comparison
+  tables and success/failure MP4s, see [Ubuntu OOD evaluation](docs/OOD_MULTIAXIS_DESIGN.md).
+  The [previous five-condition protocol](docs/OOD_EVALUATION_UBUNTU.md) remains available explicitly.
 
 - For grasping and articulation of free-base objects, run
 

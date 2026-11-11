@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "seed": 1,
+  "split": "test",
+  "samples_per_object": 100,
+  "objects": [
+    "box", "laptop", "notebook", "waffleiron", "mixer", "ketchup",
+    "espressomachine", "microwave", "capsulemachine", "phone"
+  ],
+  "profiles": {
+    "id_control": {},
+    "ood_height": {"lift_m": [0.6, 0.9]},
+    "ood_translation": {"translation_distance_m": [0.5, 0.8]},
+    "ood_articulation_180": {"articulation_deg": 180.0},
+    "ood_combined": {
+      "lift_m": [0.6, 0.9],
+      "translation_distance_m": [0.5, 0.8],
+      "articulation_deg": 180.0
+    }
+  },
+  "checkpoints": {
+    "cooperative_left": "raisimGymTorch/data_all/general_two/2023-05-15-10-18-54/full_400_l.pt",
+    "cooperative_right": "raisimGymTorch/data_all/general_two/2023-05-15-10-18-54/full_400_r.pt",
+    "articulation_right": "raisimGymTorch/data_all/multi_obj_arti/2023-05-14-16-30-13/full_8600_r.pt"
+  },
+  "runtime": {
+    "batch_size": 100,
+    "num_threads": 4,
+    "device": "cpu"
+  },
+  "videos_per_outcome": 5
+}

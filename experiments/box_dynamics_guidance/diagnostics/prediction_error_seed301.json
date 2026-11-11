@@ -1,0 +1,473 @@
+{
+  "source_dataset_sha256": "721de4e23c199adfa1341df135d57cae3133bc6dbb76d3457884108fd4c2ab6e",
+  "checkpoint_sha256": "c1dc1cd3d435ce6ed7be3d4cca3e3db6952ee9a8309dad35e83a6474eb90ae81",
+  "target_std": [
+    0.6281298398971558,
+    0.7610152363777161,
+    0.6625835299491882,
+    0.42476803064346313,
+    0.054322026669979095,
+    0.5486404895782471,
+    0.3465680778026581,
+    0.5649147033691406,
+    0.4006141126155853
+  ],
+  "output_names": [
+    "end_articulation_angle_rad",
+    "end_articulation_velocity_rad_s",
+    "end_base_position_x_m",
+    "end_base_position_y_m",
+    "end_base_position_z_m",
+    "end_base_quaternion_w",
+    "end_base_quaternion_x",
+    "end_base_quaternion_y",
+    "end_base_quaternion_z"
+  ],
+  "splits": {
+    "train": {
+      "metrics": {
+        "normalized_mse": 0.03145981294982592,
+        "per_output_rmse": [
+          0.06953266514211935,
+          0.26808033803676745,
+          0.10643516996017063,
+          0.08124157211255434,
+          0.011946504635803832,
+          0.05466637080828993,
+          0.031509488375117765,
+          0.048079974311369005,
+          0.041254897121616035
+        ],
+        "angle_rad_rmse": 0.06953266514211935,
+        "angular_velocity_rad_s_rmse": 0.26808033803676745,
+        "base_position_m_rmse": 0.0776130517734902,
+        "base_quaternion_component_rmse": 0.044707131481757145
+      },
+      "persistence": {
+        "normalized_mse": 0.22280296089888313,
+        "per_output_rmse": [
+          0.1256319698958532,
+          1.017263381353045,
+          0.05576907141929602,
+          0.03205747706216541,
+          0.018853026205745003,
+          0.04299278178190368,
+          0.043700254181094696,
+          0.04555623331543145,
+          0.05166335434555251
+        ],
+        "angle_rad_rmse": 0.1256319698958532,
+        "angular_velocity_rad_s_rmse": 1.017263381353045,
+        "base_position_m_rmse": 0.03870102392993626,
+        "base_quaternion_component_rmse": 0.04610467459207132
+      },
+      "actual_angle_change_abs_quantiles": {
+        "0": 0.0,
+        "0.5": 0.00637583713978529,
+        "0.9": 0.1538768693804741,
+        "0.95": 0.23776562809944152,
+        "0.99": 0.5171239006519321,
+        "1.0": 2.4862687587738037
+      },
+      "actual_position_change_norm_m_quantiles": {
+        "0": 0.0,
+        "0.5": 5.784577479062136e-05,
+        "0.9": 0.03206660747528076,
+        "0.95": 0.051165503449738005,
+        "0.99": 0.12178477935493001,
+        "1.0": 3.088092565536499
+      },
+      "angle_change_less_001_rad_fraction": 0.5514166666666667,
+      "position_change_less_005_m_fraction": 0.7796666666666666,
+      "model_angle_error_abs_quantiles": {
+        "0": 1.6093254089355469e-06,
+        "0.5": 0.026856213808059692,
+        "0.9": 0.0796664834022522,
+        "0.95": 0.10306159853935236,
+        "0.99": 0.19083241701126105,
+        "1.0": 2.3759398460388184
+      },
+      "model_position_component_rmse_per_window_quantiles": {
+        "0": 0.0006372214411385357,
+        "0.5": 0.021521898917853832,
+        "0.9": 0.04979538545012475,
+        "0.95": 0.06501755453646177,
+        "0.99": 0.11520745940506466,
+        "1.0": 3.2575573921203613
+      },
+      "position_error_mse_top_1percent_share": 0.8401168933641912,
+      "position_error_mse_top_5percent_share": 0.8864560071981248,
+      "target_std": [
+        0.6281298198807294,
+        0.7610152132214542,
+        0.6625835366241223,
+        0.42476802144243936,
+        0.0543220284132316,
+        0.5486404725953472,
+        0.3465680645489361,
+        0.5649146936813553,
+        0.40061410119696295
+      ],
+      "normalized_mse_by_output": [
+        0.012254028856189984,
+        0.12409183941658022,
+        0.02580411943308042,
+        0.03658078255345745,
+        0.04836484309045846,
+        0.0099280689628512,
+        0.008266193980027882,
+        0.007243737462855384,
+        0.010604703289041433
+      ],
+      "start_position_goal_distance_m_quantiles": {
+        "0": 0.000431968888733536,
+        "0.5": 0.031379882246255875,
+        "0.9": 0.1833579793572426,
+        "0.95": 0.38352122604846933,
+        "0.99": 0.8059529274702072,
+        "1.0": 25.151073455810547
+      },
+      "start_position_goal_distance_over_1m_windows": 92,
+      "position_error_mean_xyz_m": [
+        0.0014769426779821515,
+        0.0008355585741810501,
+        -0.0012573541607707739
+      ],
+      "predicted_quaternion_norm_quantiles": {
+        "0": 0.6854822039604187,
+        "0.5": 0.9990337193012238,
+        "0.9": 1.0405534505844116,
+        "0.95": 1.0568888187408447,
+        "0.99": 1.0991509091854095,
+        "1.0": 2.4916722774505615
+      },
+      "near_goal_subsets": {
+        "0.05": {
+          "n": 7180,
+          "model_position_rmse": 0.023560778196690224,
+          "persistence_position_rmse": 0.005031765550053429,
+          "model_angle_rmse": 0.04623046280153268,
+          "persistence_angle_rmse": 0.0988960492016481
+        },
+        "0.1": {
+          "n": 9244,
+          "model_position_rmse": 0.025628343402492603,
+          "persistence_position_rmse": 0.007125188499537661,
+          "model_angle_rmse": 0.04879469859913338,
+          "persistence_angle_rmse": 0.10464050978382108
+        },
+        "0.5": {
+          "n": 11505,
+          "model_position_rmse": 0.031151019089696756,
+          "persistence_position_rmse": 0.01360826459559851,
+          "model_angle_rmse": 0.05262130698023269,
+          "persistence_angle_rmse": 0.11009263707750908
+        },
+        "1.0": {
+          "n": 11908,
+          "model_position_rmse": 0.033268975512347226,
+          "persistence_position_rmse": 0.014153690612008179,
+          "model_angle_rmse": 0.05348158317903123,
+          "persistence_angle_rmse": 0.11203066377228396
+        }
+      },
+      "rotation_geodesic_after_normalizing_predictions": {
+        "model_rmse_rad": 0.13885592898765575,
+        "persistence_rmse_rad": 0.18707834161756898,
+        "model_median_rad": 0.07539275712000618,
+        "persistence_median_rad": 0.0003907175294391992
+      }
+    },
+    "val": {
+      "metrics": {
+        "normalized_mse": 0.16167748097100917,
+        "per_output_rmse": [
+          0.1405280978617215,
+          0.6950510531234497,
+          0.12483992514768047,
+          0.12669743576117348,
+          0.018260799015463427,
+          0.1535947338728914,
+          0.10105637207408218,
+          0.16603490916658184,
+          0.11585672323548134
+        ],
+        "angle_rad_rmse": 0.1405280978617215,
+        "angular_velocity_rad_s_rmse": 0.6950510531234497,
+        "base_position_m_rmse": 0.10323226872772412,
+        "base_quaternion_component_rmse": 0.13674255371964458
+      },
+      "persistence": {
+        "normalized_mse": 0.10718117984979428,
+        "per_output_rmse": [
+          0.11533626876144473,
+          0.7183401483952742,
+          0.008008253276388379,
+          0.010197861777608048,
+          0.007034539446261622,
+          0.027990282326432435,
+          0.031306021810864774,
+          0.030154855291557897,
+          0.0376224324535314
+        ],
+        "angle_rad_rmse": 0.11533626876144473,
+        "angular_velocity_rad_s_rmse": 0.7183401483952742,
+        "base_position_m_rmse": 0.008516909662449857,
+        "base_quaternion_component_rmse": 0.031969851531212554
+      },
+      "actual_angle_change_abs_quantiles": {
+        "0": 2.7008354663848877e-08,
+        "0.5": 0.007846593856811523,
+        "0.9": 0.14510546922683715,
+        "0.95": 0.20782949030399306,
+        "0.99": 0.4746902561187728,
+        "1.0": 1.5626364946365356
+      },
+      "actual_position_change_norm_m_quantiles": {
+        "0": 0.0,
+        "0.5": 7.28484446881339e-05,
+        "0.9": 0.014675224386155603,
+        "0.95": 0.028407174348831173,
+        "0.99": 0.06655449181795108,
+        "1.0": 0.24104119837284088
+      },
+      "angle_change_less_001_rad_fraction": 0.5246231155778894,
+      "position_change_less_005_m_fraction": 0.8221105527638191,
+      "model_angle_error_abs_quantiles": {
+        "0": 5.34658320248127e-05,
+        "0.5": 0.07150474190711975,
+        "0.9": 0.21001551151275633,
+        "0.95": 0.2746246933937072,
+        "0.99": 0.43662014007568317,
+        "1.0": 1.0772109031677246
+      },
+      "model_position_component_rmse_per_window_quantiles": {
+        "0": 0.001847794046625495,
+        "0.5": 0.05820586904883385,
+        "0.9": 0.15707785189151763,
+        "0.95": 0.21165454089641542,
+        "0.99": 0.3881202292442321,
+        "1.0": 0.5054203867912292
+      },
+      "position_error_mse_top_1percent_share": 0.18476640963676097,
+      "position_error_mse_top_5percent_share": 0.4572148807183635,
+      "target_std": [
+        0.6246664702136027,
+        0.6867504867087991,
+        0.12311354231462918,
+        0.1317462762243076,
+        0.025660991773066733,
+        0.46457349593322994,
+        0.3596373131766485,
+        0.4934413016637239,
+        0.4206752668310056
+      ],
+      "normalized_mse_by_output": [
+        0.0500526971061904,
+        0.8341549003114318,
+        0.035499785311702364,
+        0.0889676271159142,
+        0.1130023887666221,
+        0.07837488912617788,
+        0.08502571460581573,
+        0.08638395069503647,
+        0.08363537215946562
+      ],
+      "start_position_goal_distance_m_quantiles": {
+        "0": 0.0047424365766346455,
+        "0.5": 0.058149173855781555,
+        "0.9": 0.1769336104393005,
+        "0.95": 0.2833265006542193,
+        "0.99": 0.6669796538352725,
+        "1.0": 0.8953825831413269
+      },
+      "start_position_goal_distance_over_1m_windows": 0,
+      "position_error_mean_xyz_m": [
+        -0.019361013546586037,
+        -0.024859782308340073,
+        0.001313204295001924
+      ],
+      "predicted_quaternion_norm_quantiles": {
+        "0": 0.25362086296081543,
+        "0.5": 0.9186981320381165,
+        "0.9": 1.0709381341934203,
+        "0.95": 1.1224027395248413,
+        "0.99": 1.215773181915283,
+        "1.0": 1.3366764783859253
+      },
+      "near_goal_subsets": {
+        "0.05": {
+          "n": 1253,
+          "model_position_rmse": 0.054982793328521976,
+          "persistence_position_rmse": 0.0029372560394314187,
+          "model_angle_rmse": 0.1153704169317198,
+          "persistence_angle_rmse": 0.08304396170808065
+        },
+        "0.1": {
+          "n": 2256,
+          "model_position_rmse": 0.0762981874742751,
+          "persistence_position_rmse": 0.004647123439376004,
+          "model_angle_rmse": 0.1256998720831817,
+          "persistence_angle_rmse": 0.09858062606274191
+        },
+        "0.5": {
+          "n": 2910,
+          "model_position_rmse": 0.08924737882131872,
+          "persistence_position_rmse": 0.008583608989979792,
+          "model_angle_rmse": 0.14171788617364942,
+          "persistence_angle_rmse": 0.11612038638866791
+        },
+        "1.0": {
+          "n": 2985,
+          "model_position_rmse": 0.10323226890200961,
+          "persistence_position_rmse": 0.008516909657190295,
+          "model_angle_rmse": 0.1405280978262504,
+          "persistence_angle_rmse": 0.11533626887710417
+        }
+      },
+      "residual_input_probe": {
+        "actual_z": {
+          "normalized_mse": 0.16167748097100917,
+          "per_output_rmse": [
+            0.1405280978617215,
+            0.6950510531234497,
+            0.12483992514768047,
+            0.12669743576117348,
+            0.018260799015463427,
+            0.1535947338728914,
+            0.10105637207408218,
+            0.16603490916658184,
+            0.11585672323548134
+          ],
+          "angle_rad_rmse": 0.1405280978617215,
+          "angular_velocity_rad_s_rmse": 0.6950510531234497,
+          "base_position_m_rmse": 0.10323226872772412,
+          "base_quaternion_component_rmse": 0.13674255371964458
+        },
+        "zero_z": {
+          "normalized_mse": 0.16105956507727304,
+          "per_output_rmse": [
+            0.14006101570509355,
+            0.6939000037491263,
+            0.12472367799977488,
+            0.1264766995240119,
+            0.01819635204811898,
+            0.15323191769022135,
+            0.10083120320146383,
+            0.16595034844446319,
+            0.1155375250523816
+          ],
+          "angle_rad_rmse": 0.14006101570509355,
+          "angular_velocity_rad_s_rmse": 0.6939000037491263,
+          "base_position_m_rmse": 0.10309131648549688,
+          "base_quaternion_component_rmse": 0.13650585150658198
+        },
+        "shuffled_z": {
+          "normalized_mse": 0.16178917568235518,
+          "per_output_rmse": [
+            0.14078137783270173,
+            0.6955458791558538,
+            0.12456726417945281,
+            0.1266567477687166,
+            0.018213362546555464,
+            0.153192080925463,
+            0.10123937685835488,
+            0.1665680851796386,
+            0.11584381491482673
+          ],
+          "angle_rad_rmse": 0.14078137783270173,
+          "angular_velocity_rad_s_rmse": 0.6955458791558538,
+          "base_position_m_rmse": 0.1031029608946886,
+          "base_quaternion_component_rmse": 0.13682282479485602
+        },
+        "zero_vs_actual_prediction_angle_abs_delta_quantiles": {
+          "0": 0.0,
+          "0.5": 0.006306707859039307,
+          "0.9": 0.020188403129577634,
+          "0.95": 0.024583840370178214,
+          "0.99": 0.03706444025039658,
+          "1.0": 0.06698894500732422
+        }
+      },
+      "by_articulation_reference": {
+        "1/box_use_02": {
+          "n": 825,
+          "model_position_rmse": 0.13601435883455745,
+          "persistence_position_rmse": 0.011046431794816654,
+          "model_angle_rmse": 0.1732564937483931,
+          "persistence_angle_rmse": 0.14277873221065154
+        },
+        "7/box_use_01": {
+          "n": 2160,
+          "model_position_rmse": 0.08752890584782236,
+          "persistence_position_rmse": 0.007323720605360511,
+          "model_angle_rmse": 0.12580025544889087,
+          "persistence_angle_rmse": 0.10294184504212231
+        }
+      },
+      "rotation_geodesic_after_normalizing_predictions": {
+        "model_rmse_rad": 0.4996172850584106,
+        "persistence_rmse_rad": 0.12851299430283822,
+        "model_median_rad": 0.2764397889613405,
+        "persistence_median_rad": 0.0005326661055134348
+      }
+    }
+  },
+  "extreme_training_states": {
+    "definition": "start base position farther than 1m from its goal; diagnostic slice only, no filtering applied",
+    "windows": 92,
+    "episodes": {
+      "box__collection__train__0039": 15,
+      "box__collection__train__0083": 15,
+      "box__collection__train__0422": 15,
+      "box__collection__train__0448": 2,
+      "box__collection__train__0644": 15,
+      "box__collection__train__0667": 15,
+      "box__collection__train__0722": 15
+    },
+    "position_std_all_m": [
+      0.6625835366241223,
+      0.42476802144243936,
+      0.0543220284132316
+    ],
+    "position_std_omit_diagnostic_slice_m": [
+      0.103099216498603,
+      0.14478960828945006,
+      0.02966505686290986
+    ]
+  },
+  "val_loss_fraction_by_output": [
+    0.03439817821077177,
+    0.5732639912575752,
+    0.02439684596826751,
+    0.06114204567298361,
+    0.07765967733547843,
+    0.05386230032104137,
+    0.05843300866093281,
+    0.05936644181739579,
+    0.05747751075555347
+  ],
+  "verified_at_jst": "2026-11-11T09:48:57.913039+09:00",
+  "scope": "Read-only diagnostics on existing training/validation data and saved best checkpoint; no new training, simulation, or OOD data used.",
+  "calibration_response_probe": {
+    "dataset": "runs/collector_calibration_seed101_v2",
+    "conditions": 4,
+    "horizon_seconds": 0.2,
+    "interpretation": "Exploratory paired candidate effect check; not formal held-out validation or OOD evaluation. Effect means end angle with z minus end angle with z=0 at the same initial condition.",
+    "amplitude_1": {
+      "nonzero_candidates": 24,
+      "actual_abs_angle_effect_median_rad": 0.0002288,
+      "predicted_abs_angle_effect_median_rad": 0.0059423,
+      "model_effect_rmse_rad": 0.018821,
+      "zero_effect_baseline_rmse_rad": 0.0169077
+    },
+    "source_dataset_sha256": "8fdb8a7caaa4e8b628fb6c4d7a0203dcbcc03e3161ed2a8ed2ed5cd6e6a52cbe"
+  },
+  "interpretation_limits": [
+    "Identity residual prediction and robust loss are proposed hypotheses, not tested fixes.",
+    "Observed distribution tails can change normalization. Removing failures is not automatically warranted.",
+    "Shuffling or zeroing residual input is a sensitivity diagnostic, not a causal evaluation of applied actions.",
+    "Quaternion geodesic diagnostics normalize predictions for evaluation; this does not change training or prove rotation quality.",
+    "Validation references are held out; OOD target goals and official test references are untouched."
+  ]
+}

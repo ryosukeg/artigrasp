@@ -1,0 +1,243 @@
+{
+  "version": 3,
+  "evaluation_protocol": "factorial_v1",
+  "seed": 1,
+  "split": "test",
+  "samples_per_object": 100,
+  "objects": [
+    "box",
+    "laptop",
+    "notebook",
+    "waffleiron",
+    "mixer",
+    "ketchup",
+    "espressomachine",
+    "microwave",
+    "capsulemachine",
+    "phone"
+  ],
+  "normal_goal": {
+    "source": "paper_supplement_b4",
+    "articulation_rad": [
+      0.5,
+      0.6
+    ],
+    "yaw_rad": [
+      -0.4,
+      0.4
+    ]
+  },
+  "default_suite": "all",
+  "suites": {
+    "all": [
+      "normal",
+      "ood_horizontal",
+      "ood_lift",
+      "ood_articulation",
+      "ood_horizontal_lift",
+      "ood_horizontal_articulation",
+      "ood_lift_articulation",
+      "ood_all"
+    ],
+    "core": [
+      "normal",
+      "ood_horizontal",
+      "ood_lift",
+      "ood_articulation",
+      "ood_horizontal_lift",
+      "ood_horizontal_articulation",
+      "ood_lift_articulation",
+      "ood_all"
+    ]
+  },
+  "profiles": {
+    "normal": {
+      "family": "factorial",
+      "severity": 0,
+      "compare_to": "normal",
+      "description": "論文の通常目標分布",
+      "factor_flags": {
+        "horizontal": false,
+        "lift": false,
+        "articulation": false
+      }
+    },
+    "ood_horizontal": {
+      "family": "factorial",
+      "severity": 1,
+      "compare_to": "normal",
+      "description": "水平移動のみOOD",
+      "factor_flags": {
+        "horizontal": true,
+        "lift": false,
+        "articulation": false
+      },
+      "translation_distance_m": [
+        0.3,
+        0.8
+      ],
+      "translation_direction": "control"
+    },
+    "ood_lift": {
+      "family": "factorial",
+      "severity": 1,
+      "compare_to": "normal",
+      "description": "持ち上げのみOOD",
+      "factor_flags": {
+        "horizontal": false,
+        "lift": true,
+        "articulation": false
+      },
+      "lift_m": [
+        0.6,
+        0.9
+      ]
+    },
+    "ood_articulation": {
+      "family": "factorial",
+      "severity": 1,
+      "compare_to": "normal",
+      "description": "開閉のみOOD",
+      "factor_flags": {
+        "horizontal": false,
+        "lift": false,
+        "articulation": true
+      },
+      "articulation_ood": {
+        "intervals_rad": [
+          [
+            0.2,
+            0.4
+          ],
+          [
+            1.6,
+            3.1
+          ]
+        ],
+        "joint_margin_rad": 0.05
+      }
+    },
+    "ood_horizontal_lift": {
+      "family": "factorial",
+      "severity": 1,
+      "compare_to": "normal",
+      "description": "水平移動と持ち上げをOOD",
+      "factor_flags": {
+        "horizontal": true,
+        "lift": true,
+        "articulation": false
+      },
+      "translation_distance_m": [
+        0.3,
+        0.8
+      ],
+      "translation_direction": "control",
+      "lift_m": [
+        0.6,
+        0.9
+      ]
+    },
+    "ood_horizontal_articulation": {
+      "family": "factorial",
+      "severity": 1,
+      "compare_to": "normal",
+      "description": "水平移動と開閉をOOD",
+      "factor_flags": {
+        "horizontal": true,
+        "lift": false,
+        "articulation": true
+      },
+      "translation_distance_m": [
+        0.3,
+        0.8
+      ],
+      "translation_direction": "control",
+      "articulation_ood": {
+        "intervals_rad": [
+          [
+            0.2,
+            0.4
+          ],
+          [
+            1.6,
+            3.1
+          ]
+        ],
+        "joint_margin_rad": 0.05
+      }
+    },
+    "ood_lift_articulation": {
+      "family": "factorial",
+      "severity": 1,
+      "compare_to": "normal",
+      "description": "持ち上げと開閉をOOD",
+      "factor_flags": {
+        "horizontal": false,
+        "lift": true,
+        "articulation": true
+      },
+      "lift_m": [
+        0.6,
+        0.9
+      ],
+      "articulation_ood": {
+        "intervals_rad": [
+          [
+            0.2,
+            0.4
+          ],
+          [
+            1.6,
+            3.1
+          ]
+        ],
+        "joint_margin_rad": 0.05
+      }
+    },
+    "ood_all": {
+      "family": "factorial",
+      "severity": 1,
+      "compare_to": "normal",
+      "description": "3因子すべてOOD",
+      "factor_flags": {
+        "horizontal": true,
+        "lift": true,
+        "articulation": true
+      },
+      "translation_distance_m": [
+        0.3,
+        0.8
+      ],
+      "translation_direction": "control",
+      "lift_m": [
+        0.6,
+        0.9
+      ],
+      "articulation_ood": {
+        "intervals_rad": [
+          [
+            0.2,
+            0.4
+          ],
+          [
+            1.6,
+            3.1
+          ]
+        ],
+        "joint_margin_rad": 0.05
+      }
+    }
+  },
+  "checkpoints": {
+    "cooperative_left": "raisimGymTorch/data_all/general_two/2023-05-15-10-18-54/full_400_l.pt",
+    "cooperative_right": "raisimGymTorch/data_all/general_two/2023-05-15-10-18-54/full_400_r.pt",
+    "articulation_right": "raisimGymTorch/data_all/multi_obj_arti/2023-05-14-16-30-13/full_8600_r.pt"
+  },
+  "runtime": {
+    "batch_size": 100,
+    "num_threads": 4,
+    "device": "cuda"
+  },
+  "videos_per_outcome": 5,
+  "video_metric": "ood_goal_success"
+}

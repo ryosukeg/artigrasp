@@ -1,0 +1,52 @@
+{
+  "completed_utc": "2026-11-07T09:47:55Z",
+  "unit_tests": {
+    "passed": 32,
+    "command": "python -m unittest discover -s experiments/box_dynamics_guidance -p \"*test*.py\" -v"
+  },
+  "runs": {
+    "zero": {
+      "path": "runs/collector_zero_seed101_v2",
+      "episodes": 8,
+      "valid_episodes": 8,
+      "valid_windows": 120,
+      "invalid_windows": 0,
+      "batch_wall_seconds": 24.395514536998235
+    },
+    "calibration": {
+      "path": "runs/collector_calibration_seed101_v2",
+      "episodes": 52,
+      "valid_episodes": 52,
+      "valid_windows": 780,
+      "invalid_windows": 0,
+      "batch_wall_seconds": 154.65449614200043
+    },
+    "random": {
+      "path": "datasets/box_response_smoke_seed301",
+      "episodes": 40,
+      "valid_episodes": 40,
+      "valid_windows": 600,
+      "invalid_windows": 0,
+      "batch_wall_seconds": 116.49689942103578
+    }
+  },
+  "training": {
+    "report": "checkpoints/smoke_seed301/report.json",
+    "wall_seconds": 4.133,
+    "epochs": 5,
+    "val_angle_rmse_rad": 0.4493934623937274,
+    "val_persistence_angle_rmse_rad": 0.1496890592223746
+  },
+  "initial_collection": {
+    "seed": 301,
+    "amplitude": 1.0,
+    "horizon": 20,
+    "goal_range_rad": [
+      0.5,
+      1.5
+    ],
+    "batch_size": 20
+  },
+  "full_collection_started": false,
+  "ood_evaluation_started": false
+}

@@ -1,0 +1,549 @@
+{
+  "version": 2,
+  "evaluation_protocol": "multiaxis_v1",
+  "seed": 1,
+  "split": "test",
+  "samples_per_object": 100,
+  "objects": [
+    "box",
+    "laptop",
+    "notebook",
+    "waffleiron",
+    "mixer",
+    "ketchup",
+    "espressomachine",
+    "microwave",
+    "capsulemachine",
+    "phone"
+  ],
+  "default_suite": "core",
+  "suites": {
+    "core": [
+      "id_control",
+      "height_medium",
+      "height_large",
+      "distance_medium",
+      "distance_large",
+      "direction_balanced",
+      "yaw_medium",
+      "yaw_large",
+      "air_control",
+      "air_roll_large",
+      "air_pitch_large",
+      "air_so3_large",
+      "angle_small",
+      "angle_upper",
+      "combo_distance_yaw",
+      "combo_planar",
+      "combo_spatial"
+    ],
+    "full": [
+      "id_control",
+      "height_medium",
+      "height_large",
+      "distance_medium",
+      "distance_large",
+      "direction_balanced",
+      "yaw_medium",
+      "yaw_large",
+      "air_control",
+      "air_roll_large",
+      "air_pitch_large",
+      "air_so3_large",
+      "angle_small",
+      "angle_upper",
+      "combo_distance_yaw",
+      "combo_planar",
+      "combo_spatial",
+      "yaw_small",
+      "air_roll_medium",
+      "air_pitch_medium",
+      "air_so3_medium",
+      "direction_x_positive",
+      "direction_y_positive",
+      "direction_x_negative",
+      "direction_y_negative",
+      "angle_upper_medium"
+    ],
+    "stress": [
+      "id_control",
+      "stress_articulation_180",
+      "stress_yaw_180",
+      "stress_combined"
+    ],
+    "all": [
+      "id_control",
+      "height_medium",
+      "height_large",
+      "distance_medium",
+      "distance_large",
+      "direction_balanced",
+      "yaw_medium",
+      "yaw_large",
+      "air_control",
+      "air_roll_large",
+      "air_pitch_large",
+      "air_so3_large",
+      "angle_small",
+      "angle_upper",
+      "combo_distance_yaw",
+      "combo_planar",
+      "combo_spatial",
+      "yaw_small",
+      "air_roll_medium",
+      "air_pitch_medium",
+      "air_so3_medium",
+      "direction_x_positive",
+      "direction_y_positive",
+      "direction_x_negative",
+      "direction_y_negative",
+      "angle_upper_medium",
+      "stress_articulation_180",
+      "stress_yaw_180",
+      "stress_combined"
+    ]
+  },
+  "profiles": {
+    "id_control": {
+      "family": "control",
+      "severity": 0,
+      "compare_to": "id_control",
+      "description": "公開評価範囲に沿った対照"
+    },
+    "height_medium": {
+      "family": "lift",
+      "severity": 1,
+      "compare_to": "id_control",
+      "description": "中程度の持ち上げ外挿",
+      "lift_m": [
+        0.35,
+        0.45
+      ]
+    },
+    "height_large": {
+      "family": "lift",
+      "severity": 2,
+      "compare_to": "id_control",
+      "description": "大きな持ち上げ外挿",
+      "lift_m": [
+        0.6,
+        0.9
+      ]
+    },
+    "distance_medium": {
+      "family": "distance",
+      "severity": 1,
+      "compare_to": "id_control",
+      "description": "方向を対照と同じに保った距離外挿",
+      "translation_distance_m": [
+        0.2,
+        0.35
+      ],
+      "translation_direction": "control"
+    },
+    "distance_large": {
+      "family": "distance",
+      "severity": 2,
+      "compare_to": "id_control",
+      "description": "方向を対照と同じに保った大距離外挿",
+      "translation_distance_m": [
+        0.5,
+        0.8
+      ],
+      "translation_direction": "control"
+    },
+    "direction_balanced": {
+      "family": "direction",
+      "severity": 1,
+      "compare_to": "id_control",
+      "description": "距離を対照と同じに保った4方向、各25例",
+      "translation_directions_deg": [
+        0,
+        90,
+        180,
+        270
+      ]
+    },
+    "yaw_medium": {
+      "family": "yaw",
+      "severity": 1,
+      "compare_to": "id_control",
+      "description": "机上の世界Z軸回転、正負各50例",
+      "orientation": {
+        "axis": "z",
+        "angle_deg": [
+          60,
+          75
+        ],
+        "frame": "world",
+        "stage": "placement",
+        "signed": true
+      }
+    },
+    "yaw_large": {
+      "family": "yaw",
+      "severity": 2,
+      "compare_to": "id_control",
+      "description": "机上の大きな世界Z軸回転",
+      "orientation": {
+        "axis": "z",
+        "angle_deg": [
+          120,
+          150
+        ],
+        "frame": "world",
+        "stage": "placement",
+        "signed": true
+      }
+    },
+    "air_control": {
+      "family": "air_control",
+      "severity": 0,
+      "compare_to": "id_control",
+      "description": "空中姿勢評価専用の高さ0.6m対照",
+      "lift_m": 0.6
+    },
+    "air_roll_large": {
+      "family": "air_roll",
+      "severity": 2,
+      "compare_to": "air_control",
+      "description": "持ち上げ中の世界X軸回転",
+      "lift_m": 0.6,
+      "orientation": {
+        "axis": "x",
+        "angle_deg": [
+          90,
+          120
+        ],
+        "frame": "world",
+        "stage": "lift",
+        "signed": true
+      }
+    },
+    "air_pitch_large": {
+      "family": "air_pitch",
+      "severity": 2,
+      "compare_to": "air_control",
+      "description": "持ち上げ中の世界Y軸回転",
+      "lift_m": 0.6,
+      "orientation": {
+        "axis": "y",
+        "angle_deg": [
+          90,
+          120
+        ],
+        "frame": "world",
+        "stage": "lift",
+        "signed": true
+      }
+    },
+    "air_so3_large": {
+      "family": "air_so3",
+      "severity": 2,
+      "compare_to": "air_control",
+      "description": "球面一様な回転軸を使う空中3D姿勢外挿",
+      "lift_m": 0.6,
+      "orientation": {
+        "axis": "random",
+        "angle_deg": [
+          90,
+          150
+        ],
+        "frame": "world",
+        "stage": "lift",
+        "signed": true
+      }
+    },
+    "angle_small": {
+      "family": "articulation_lower",
+      "severity": 1,
+      "compare_to": "id_control",
+      "description": "学習のランダム目標下限0.5radより小さい目標",
+      "articulation_deg": [
+        15,
+        23
+      ]
+    },
+    "angle_upper": {
+      "family": "articulation_upper",
+      "severity": 2,
+      "compare_to": "id_control",
+      "description": "物体の可動域上限85〜98%、範囲内だが物体ごとにOOD判定",
+      "articulation_limit_fraction": [
+        0.85,
+        0.98
+      ]
+    },
+    "combo_distance_yaw": {
+      "family": "interaction",
+      "severity": 1,
+      "compare_to": "id_control",
+      "description": "距離×yawの2因子組合せ",
+      "translation_distance_m": [
+        0.2,
+        0.35
+      ],
+      "translation_direction": "control",
+      "orientation": {
+        "axis": "z",
+        "angle_deg": [
+          60,
+          75
+        ],
+        "frame": "world",
+        "stage": "placement",
+        "signed": true
+      },
+      "factors": [
+        "distance_medium",
+        "yaw_medium"
+      ]
+    },
+    "combo_planar": {
+      "family": "combined_planar",
+      "severity": 1,
+      "compare_to": "id_control",
+      "description": "持ち上げ・距離・机上yaw・関節角の組合せ",
+      "lift_m": [
+        0.35,
+        0.45
+      ],
+      "translation_distance_m": [
+        0.2,
+        0.35
+      ],
+      "translation_direction": "control",
+      "orientation": {
+        "axis": "z",
+        "angle_deg": [
+          60,
+          75
+        ],
+        "frame": "world",
+        "stage": "placement",
+        "signed": true
+      },
+      "articulation_limit_fraction": [
+        0.85,
+        0.98
+      ],
+      "factors": [
+        "height_medium",
+        "distance_medium",
+        "yaw_medium",
+        "angle_upper"
+      ]
+    },
+    "combo_spatial": {
+      "family": "combined_spatial",
+      "severity": 2,
+      "compare_to": "air_control",
+      "description": "持ち上げ・距離・空中3D姿勢・関節角の組合せ",
+      "lift_m": 0.6,
+      "translation_distance_m": [
+        0.2,
+        0.35
+      ],
+      "translation_direction": "control",
+      "orientation": {
+        "axis": "random",
+        "angle_deg": [
+          90,
+          150
+        ],
+        "frame": "world",
+        "stage": "lift",
+        "signed": true
+      },
+      "articulation_limit_fraction": [
+        0.85,
+        0.98
+      ],
+      "factors": [
+        "distance_medium",
+        "air_so3_large",
+        "angle_upper"
+      ]
+    },
+    "yaw_small": {
+      "family": "yaw",
+      "severity": 0.5,
+      "compare_to": "id_control",
+      "description": "机上yawの弱い外挿",
+      "orientation": {
+        "axis": "z",
+        "angle_deg": [
+          30,
+          45
+        ],
+        "frame": "world",
+        "stage": "placement",
+        "signed": true
+      }
+    },
+    "air_roll_medium": {
+      "family": "air_roll",
+      "severity": 1,
+      "compare_to": "air_control",
+      "description": "中程度の空中X軸回転",
+      "lift_m": 0.6,
+      "orientation": {
+        "axis": "x",
+        "angle_deg": [
+          45,
+          60
+        ],
+        "frame": "world",
+        "stage": "lift",
+        "signed": true
+      }
+    },
+    "air_pitch_medium": {
+      "family": "air_pitch",
+      "severity": 1,
+      "compare_to": "air_control",
+      "description": "中程度の空中Y軸回転",
+      "lift_m": 0.6,
+      "orientation": {
+        "axis": "y",
+        "angle_deg": [
+          45,
+          60
+        ],
+        "frame": "world",
+        "stage": "lift",
+        "signed": true
+      }
+    },
+    "air_so3_medium": {
+      "family": "air_so3",
+      "severity": 1,
+      "compare_to": "air_control",
+      "description": "中程度の空中3D回転",
+      "lift_m": 0.6,
+      "orientation": {
+        "axis": "random",
+        "angle_deg": [
+          45,
+          75
+        ],
+        "frame": "world",
+        "stage": "lift",
+        "signed": true
+      }
+    },
+    "direction_x_positive": {
+      "family": "direction",
+      "severity": 1,
+      "compare_to": "id_control",
+      "description": "距離を保った方向別100例",
+      "translation_directions_deg": [
+        0
+      ]
+    },
+    "direction_y_positive": {
+      "family": "direction",
+      "severity": 1,
+      "compare_to": "id_control",
+      "description": "距離を保った方向別100例",
+      "translation_directions_deg": [
+        90
+      ]
+    },
+    "direction_x_negative": {
+      "family": "direction",
+      "severity": 1,
+      "compare_to": "id_control",
+      "description": "距離を保った方向別100例",
+      "translation_directions_deg": [
+        180
+      ]
+    },
+    "direction_y_negative": {
+      "family": "direction",
+      "severity": 1,
+      "compare_to": "id_control",
+      "description": "距離を保った方向別100例",
+      "translation_directions_deg": [
+        270
+      ]
+    },
+    "angle_upper_medium": {
+      "family": "articulation_upper",
+      "severity": 1,
+      "compare_to": "id_control",
+      "description": "可動域の65〜80%、物体ごとのOOD判定を併記",
+      "articulation_limit_fraction": [
+        0.65,
+        0.8
+      ]
+    },
+    "stress_articulation_180": {
+      "family": "stress_articulation",
+      "severity": 3,
+      "compare_to": "id_control",
+      "description": "可動域外も含める絶対関節角180度",
+      "articulation_deg": 180,
+      "stress_test": true
+    },
+    "stress_yaw_180": {
+      "family": "stress_orientation",
+      "severity": 3,
+      "compare_to": "id_control",
+      "description": "机上での180度水平回転",
+      "orientation": {
+        "axis": "z",
+        "angle_deg": 180,
+        "frame": "world",
+        "stage": "placement",
+        "signed": false
+      },
+      "stress_test": true
+    },
+    "stress_combined": {
+      "family": "stress_combined",
+      "severity": 3,
+      "compare_to": "id_control",
+      "description": "極端な高さ・距離・yaw・関節角の同時要求",
+      "lift_m": [
+        0.6,
+        0.9
+      ],
+      "translation_distance_m": [
+        0.5,
+        0.8
+      ],
+      "translation_direction": "control",
+      "orientation": {
+        "axis": "z",
+        "angle_deg": 180,
+        "frame": "world",
+        "stage": "placement",
+        "signed": false
+      },
+      "articulation_deg": 180,
+      "stress_test": true
+    }
+  },
+  "interactions": [
+    {
+      "name": "distance_x_yaw",
+      "control": "id_control",
+      "a": "distance_medium",
+      "b": "yaw_medium",
+      "combined": "combo_distance_yaw"
+    }
+  ],
+  "checkpoints": {
+    "cooperative_left": "raisimGymTorch/data_all/general_two/2023-05-15-10-18-54/full_400_l.pt",
+    "cooperative_right": "raisimGymTorch/data_all/general_two/2023-05-15-10-18-54/full_400_r.pt",
+    "articulation_right": "raisimGymTorch/data_all/multi_obj_arti/2023-05-14-16-30-13/full_8600_r.pt"
+  },
+  "runtime": {
+    "batch_size": 100,
+    "num_threads": 4,
+    "device": "cuda"
+  },
+  "videos_per_outcome": 5,
+  "video_metric": "ood_goal_success"
+}

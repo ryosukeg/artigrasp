@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "baseline_id": "scratch_baseline_v1",
+  "description": "Frozen current-repository normal training baseline; not a claim of exact paper reproduction or convergence.",
+  "split": "train",
+  "objects": ["box", "laptop", "notebook", "waffleiron", "mixer", "ketchup", "espressomachine", "microwave"],
+  "runtime": {"device": "auto", "num_threads": 32, "torch_threads": 32, "headless": true, "observation_normalization": false, "torch_deterministic": true},
+  "stages": [
+    {"id": "left_fixed", "cfg": "configs/training/scratch_baseline_v1/left_fixed.yaml", "iterations": 20001, "environments": 1000, "required_hands": ["left"]},
+    {"id": "multi_obj_arti", "cfg": "configs/training/scratch_baseline_v1/multi_obj_arti.yaml", "iterations": 50001, "environments": 1408, "required_hands": ["right"]},
+    {"id": "general_two", "cfg": "configs/training/scratch_baseline_v1/general_two.yaml", "iterations": 9001, "environments": 2000, "required_hands": ["left", "right"]}
+  ],
+  "evaluation_template": "configs/normal_five.json"
+}

@@ -1,0 +1,41 @@
+{
+  "source": {
+    "title": "ArtiGrasp: Physically Plausible Synthesis of Bi-Manual Dexterous Grasping and Articulation",
+    "url": "https://arxiv.org/html/2309.03891v2",
+    "pdf_url": "https://arxiv.org/pdf/2309.03891v2",
+    "table_pdf_page": 7,
+    "metric_pdf_page": 6,
+    "table": "Table 3 (Dynamic Object Grasping and Articulation)",
+    "metric_section": "Section 6.1",
+    "target_section": "Supplementary B.4",
+    "notes": "Published aggregate over approximately 7500 trials on eight objects. Per-object Table 3 baselines are not reported. This OOD suite is a new protocol, not a reproduction of the original evaluation."
+  },
+  "paper_objects": ["box", "espressomachine", "ketchup", "laptop", "microwave", "mixer", "notebook", "waffleiron"],
+  "paper_excluded_objects": ["capsulemachine", "phone", "scissors"],
+  "metrics": {
+    "task_success": "final PE < 0.05 m and final SO(3) geodesic AE < 0.2 rad and final AAE < 0.5 rad",
+    "position_error_m": "Euclidean distance between final and target 3D object base positions",
+    "orientation_error_rad": "SO(3) geodesic distance between final and target base orientations",
+    "articulation_error_rad": "Absolute final-minus-target angle error (limited joint, no modulo wrapping)"
+  },
+  "dynamic_task_table3": [
+    {"model": "D-Grasp", "task_success": 0.11, "position_error_m": 0.05, "orientation_error_rad": 0.15, "articulation_error_rad": 0.66},
+    {"model": "ArtiGrasp (Ours)", "task_success": 0.50, "position_error_m": 0.03, "orientation_error_rad": 0.10, "articulation_error_rad": 0.41}
+  ],
+  "published_composed_target_range": {
+    "position_offset_x_m": [-0.1, -0.05],
+    "position_offset_y_m": [-0.1, -0.05],
+    "position_offset_z_m": [0.0, 0.0],
+    "yaw_noise_rad": [-0.4, 0.4],
+    "articulation_rad": [0.5, 0.6]
+  },
+  "published_grasp_target_range": {
+    "position_offset_x_m": [-0.15, 0.15],
+    "position_offset_y_m": [-0.15, 0.15],
+    "position_offset_z_m": [0.15, 0.45],
+    "euler_noise_each_axis_rad": [-0.3, 0.3]
+  },
+  "public_training_articulation_range_rad": [0.5, 1.5],
+  "training_range_source": "general_two/runner.py and multi_obj_arti/runner.py at Git revision 92fb307: random target angle for articulation kind 8",
+  "interpretation": "Articulation targets above 1.5 rad exceed the public randomized articulation-training range. Relocation uses heuristic wrist guidance; large displacement/lift profiles are outside the published evaluation ranges and do not establish exclusion from every training hand pose. A 180-degree requested target is outside espressomachine, ketchup and phone URDF joint limits; retain and report this fact without silently clamping the requested goal."
+}
