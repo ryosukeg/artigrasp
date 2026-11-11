@@ -1,0 +1,45 @@
+{
+  "checked_at_jst": "2026-11-07T17:50:21.054306+09:00",
+  "python": "/home/cvrt/miniconda3/envs/artigrasp/bin/python",
+  "simulation_started": false,
+  "training_started": false,
+  "configs": {
+    "baseline_smoke": {
+      "runtime_check": "passed",
+      "runtime_check_stdout": "Python 3.8.20 (/home/cvrt/miniconda3/envs/artigrasp/bin/python)\n  raisimGymTorch_path: /home/cvrt/goto/artigrasp/raisimGymTorch/raisimGymTorch/__init__.py\n  numpy: 1.23.1\n  torch: 2.4.1+cu121\n  ruamel.yaml: 0.17.16\n  raisimGymTorch.env.bin.compose_eval: available\n  compose_eval_path: /home/cvrt/goto/artigrasp/raisimGymTorch/raisimGymTorch/env/bin/compose_eval.cpython-38-x86_64-linux-gnu.so\n  compose_eval_sha256: 1c61305ab2f62dc8ebb607d643b7e617f51ed3d048a45c2aed0610380313dd2d\nRuntime check: OK\n",
+      "plan_check": "passed",
+      "episodes": 8,
+      "split": "train",
+      "seed": 101,
+      "profiles": [
+        "normal"
+      ],
+      "normal_count": 8,
+      "ood_count": 0,
+      "ood_lower_count": 0,
+      "ood_upper_count": 0,
+      "paired_initial_references": false,
+      "all_angles_within_joint_limits": true,
+      "plan_files_retained": false
+    },
+    "evaluation": {
+      "runtime_check": "passed",
+      "runtime_check_stdout": "Python 3.8.20 (/home/cvrt/miniconda3/envs/artigrasp/bin/python)\n  raisimGymTorch_path: /home/cvrt/goto/artigrasp/raisimGymTorch/raisimGymTorch/__init__.py\n  numpy: 1.23.1\n  torch: 2.4.1+cu121\n  ruamel.yaml: 0.17.16\n  raisimGymTorch.env.bin.compose_eval: available\n  compose_eval_path: /home/cvrt/goto/artigrasp/raisimGymTorch/raisimGymTorch/env/bin/compose_eval.cpython-38-x86_64-linux-gnu.so\n  compose_eval_sha256: 1c61305ab2f62dc8ebb607d643b7e617f51ed3d048a45c2aed0610380313dd2d\nRuntime check: OK\n",
+      "plan_check": "passed",
+      "episodes": 200,
+      "split": "test",
+      "seed": 202,
+      "profiles": [
+        "normal",
+        "ood_articulation"
+      ],
+      "normal_count": 100,
+      "ood_count": 100,
+      "ood_lower_count": 14,
+      "ood_upper_count": 86,
+      "paired_initial_references": true,
+      "all_angles_within_joint_limits": true,
+      "plan_files_retained": false
+    }
+  }
+}

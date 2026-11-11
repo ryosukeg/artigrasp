@@ -141,7 +141,7 @@ def _random_ood_articulation(sample_seed, definition, joint_bounds):
     """
     if not isinstance(definition, dict) or joint_bounds is None:
         raise ValueError("articulation_ood requires an interval definition and joint bounds")
-    unknown = set(definition) - {"intervals_rad", "joint_margin_rad"}
+    unknown = set(definition) - {"intervals_rad", "joint_margin_rad", "prefer_upper"}
     if unknown:
         raise ValueError("Unknown articulation_ood option(s): {}".format(", ".join(sorted(unknown))))
     margin = float(definition.get("joint_margin_rad", 0.05))
@@ -165,6 +165,10 @@ def _random_ood_articulation(sample_seed, definition, joint_bounds):
             eligible.append((index, feasible_low, feasible_high))
     if not eligible:
         raise ValueError("No feasible OOD articulation interval for joint limits {}".format(joint_bounds))
+    if definition.get("prefer_upper", False):
+        upper = [entry for entry in eligible if entry[1] > 1.5]
+        if upper:
+            eligible = upper
     rng = random.Random(stable_seed(sample_seed, "ood_articulation_union"))
     offset = rng.random() * sum(high - low for _, low, high in eligible)
     for index, low, high in eligible:
@@ -424,7 +428,8 @@ def build_plan(repo_root, config, objects=None, profiles=None, samples=None,
                 grasp_index = label_rng.randrange(len(grasp_labels))
                 arti_index = label_rng.randrange(len(arti_labels))
             for profile_name in selected_profiles:
-                definition = configured_profiles[profile_name]
+                definition = copy.deepcopy(configured_profiles[profile_name])
+                definition.update(config.get("object_profile_overrides", {}).get(object_name, {}).get(profile_name, {}))
                 target = sample_target(object_name, sample_seed, definition, limits, sample_index,
                                        config.get("normal_goal"))
                 feasible = articulation_is_feasible(target["articulation_rad"], limits)

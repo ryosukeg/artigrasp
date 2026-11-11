@@ -226,6 +226,9 @@ class Controller:
         self.goal[:, 3:7] = rotations.euler2quat(euler)
         self.lift_goal = self.goal.copy()
         self.lift_goal[:, 2] += [spec["target"]["lift_m"] for spec in specs]
+        # A small, planned clearance correction keeps collision meshes above
+        # the support surface. It changes placement only, not the lift height.
+        self.goal[:, 2] += [spec["target"].get("placement_z_offset_m", 0.0) for spec in specs]
         from .geometry import orientation_goal_pair
         from .metrics import public_euler_y_rad
         for i, spec in enumerate(specs):

@@ -1,0 +1,57 @@
+{
+  "verified_at": "2026-11-07T10:25:42.865173+00:00",
+  "full_collection_or_training_started": false,
+  "full_dataset_exists": false,
+  "full_output_exists": false,
+  "cuda_smoke": {
+    "output": "checkpoints/trainer_progress_check_cuda",
+    "epochs": 3,
+    "model": {
+      "type": "ResponseMLP",
+      "input_dim": 571,
+      "output_dim": 9,
+      "hidden_dim": 256,
+      "layers": 3
+    },
+    "last_epoch_committed_elapsed_seconds": 2.8781154620228335,
+    "best_epoch": 3,
+    "val_metrics": {
+      "normalized_mse": 2.077250608552292,
+      "per_output_rmse": [
+        0.4900850129646768,
+        1.1677858761056237,
+        0.06440041416775721,
+        0.05337248941080969,
+        0.016889394389254193,
+        0.7696673457389528,
+        0.35691815552167466,
+        0.7965876846082969,
+        0.4138397717218744
+      ],
+      "angle_rad_rmse": 0.4900850129646768,
+      "angular_velocity_rad_s_rmse": 1.1677858761056237,
+      "base_position_m_rmse": 0.049265564761204916,
+      "base_quaternion_component_rmse": 0.6175746288438062
+    },
+    "best_weights_only_reload_matches_report": true,
+    "completed_resume_added_no_epochs": true
+  },
+  "workflow_smoke": {
+    "output": "checkpoints/workflow_progress_check_cuda",
+    "epochs": 2,
+    "all_three_stages_completed": true,
+    "existing_collection_batches_reused": true,
+    "new_simulation_batches": 0,
+    "dataset_manifest_matches_original_smoke_training": true,
+    "training_and_load_elapsed_seconds": 2.82792397798039
+  },
+  "source_sha256": {
+    "run_training.py": "a7cef7258e6aec548e2e83efa4fbdcc20b7f7296cb1f7447bd94c6479790a2e1",
+    "train_model.py": "4affa67bc50f73c1669f1c11739249a16b229e51ef916f679d375b86bcf616a3",
+    "progress.py": "6d5119664d9a845547539b89906cdb561dcffc16ab39f0d598c4669b8f7cf6cd",
+    "dataset.py": "d32259e0ca85ca2e8c3c030e0af5efdfa907048d9c96ce275ed73a6ed6d89c38",
+    "collect.py": "06b07850d26d3efdfc6eb48325646d4ba78ff18716ac9cd1d34795e2480d9822",
+    "planning.py": "6dc3a78cd0dee57415bf2d686f5eeb3d356e5d5f2b01676d0de8b0587864db27"
+  },
+  "scope": "Launcher/progress/checkpoint verification on existing 40 episodes. Not full model training, guided action selection, or OOD evaluation."
+}

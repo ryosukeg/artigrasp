@@ -378,6 +378,9 @@ def _multiaxis_tables(plan, groups, aggregates, strata, interactions):
 
 
 def generate_report(results_dir):
+    if json.loads((Path(results_dir) / "plan.json").read_text(encoding="utf-8")).get("config", {}).get("evaluation_protocol") == "five_v1":
+        from .five_report import generate_report as five_report
+        return five_report(results_dir)
     """Read plan.json + episodes.jsonl; write report.md and summary.json.
 
     Planned trials always determine success denominators. Invalid trials count

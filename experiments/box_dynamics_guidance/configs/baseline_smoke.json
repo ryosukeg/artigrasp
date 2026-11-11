@@ -1,0 +1,32 @@
+{
+  "version": 3,
+  "evaluation_protocol": "factorial_v1",
+  "seed": 101,
+  "split": "train",
+  "samples_per_object": 8,
+  "objects": ["box"],
+  "normal_goal": {
+    "source": "paper_supplement_b4",
+    "articulation_rad": [0.5, 0.6],
+    "yaw_rad": [-0.4, 0.4]
+  },
+  "default_suite": "smoke",
+  "suites": {"smoke": ["normal"]},
+  "profiles": {
+    "normal": {
+      "family": "factorial",
+      "severity": 0,
+      "compare_to": "normal",
+      "description": "box の補正なし動作確認",
+      "factor_flags": {"horizontal": false, "lift": false, "articulation": false}
+    }
+  },
+  "checkpoints": {
+    "cooperative_left": "raisimGymTorch/data_all/general_two/2023-05-15-10-18-54/full_400_l.pt",
+    "cooperative_right": "raisimGymTorch/data_all/general_two/2023-05-15-10-18-54/full_400_r.pt",
+    "articulation_right": "raisimGymTorch/data_all/multi_obj_arti/2023-05-14-16-30-13/full_8600_r.pt"
+  },
+  "runtime": {"batch_size": 8, "num_threads": 4, "device": "cuda"},
+  "videos_per_outcome": 1,
+  "video_metric": "ood_goal_success"
+}

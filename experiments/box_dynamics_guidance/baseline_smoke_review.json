@@ -1,0 +1,319 @@
+{
+  "reviewed_at_jst": "2026-11-07T18:01:13.027139+09:00",
+  "run": "runs/baseline_smoke_seed101",
+  "scope": "saved numerical artifacts only; no simulation rerun or video inspection",
+  "status": "baseline_execution_verified",
+  "planned": 8,
+  "completed_unique": 8,
+  "missing": 0,
+  "invalid": 0,
+  "provenance_source_plan_input_hashes": "matched current files via verify_provenance",
+  "trajectory_hashes": "all8 matched episode records",
+  "metrics_recomputed_from_saved_states": "all8 primary errors and success flags matched",
+  "split": "train",
+  "seed": 101,
+  "profiles": [
+    "normal"
+  ],
+  "policy_device": "cuda:0",
+  "physics_threads_requested": 4,
+  "rollout_seconds": 22.04152258601971,
+  "recorded_stage_total_seconds": 24.846837806981057,
+  "success_counts": {
+    "paper_success": 2,
+    "public_success": 4,
+    "paper_position_success": 4,
+    "paper_orientation_success": 2,
+    "paper_articulation_success": 6,
+    "articulation_strict_success": 1,
+    "lift_target_success": 1,
+    "ood_goal_success": 0,
+    "strict_goal_success": 0
+  },
+  "base_start_pose_valid_count": 3,
+  "raw_observations_saved": false,
+  "explicit_residuals_saved": false,
+  "next_step": "implement residual collector; verify zero residual and small perturbations before large collection",
+  "episodes": [
+    {
+      "episode_id": "box__normal__0000",
+      "state_shape": [
+        1561,
+        138
+      ],
+      "actions_r_shape": [
+        1560,
+        51
+      ],
+      "actions_l_shape": [
+        1560,
+        51
+      ],
+      "all_arrays_finite": true,
+      "trajectory_hash_matches_record": true,
+      "recomputed_primary_metrics_match_record": true,
+      "angle_goal_rad": 0.5504378080368042,
+      "angle_start_rad": -0.0005222299369052052,
+      "angle_final_rad": 0.8248897194862366,
+      "angle_phase_net_change_rad": 0.8254119753837585,
+      "angle_phase_range_rad": 0.8508353233337402,
+      "base_start_position_error_m": 0.006302565230816774,
+      "base_start_orientation_error_rad": 0.016974677109217,
+      "base_start_within_pose_thresholds": true,
+      "final_position_error_m": 0.15218462190837315,
+      "final_orientation_error_rad": 0.7079226236454209,
+      "final_angle_error_rad": 0.2744519114494324,
+      "paper_success": false,
+      "public_success": true,
+      "lift_target_success": false,
+      "ood_goal_success": false,
+      "strict_goal_success": false,
+      "trajectory_sha256": "f92e6cdcad98980090c423b85c224a72bc2b522fed61062d834a541990739d6f"
+    },
+    {
+      "episode_id": "box__normal__0001",
+      "state_shape": [
+        1561,
+        138
+      ],
+      "actions_r_shape": [
+        1560,
+        51
+      ],
+      "actions_l_shape": [
+        1560,
+        51
+      ],
+      "all_arrays_finite": true,
+      "trajectory_hash_matches_record": true,
+      "recomputed_primary_metrics_match_record": true,
+      "angle_goal_rad": 0.5138173699378967,
+      "angle_start_rad": -0.0018025321187451482,
+      "angle_final_rad": 0.027178727090358734,
+      "angle_phase_net_change_rad": 0.02898125909268856,
+      "angle_phase_range_rad": 0.2711872160434723,
+      "base_start_position_error_m": 0.5207858220868941,
+      "base_start_orientation_error_rad": 1.6623951059380981,
+      "base_start_within_pose_thresholds": false,
+      "final_position_error_m": 0.5429399712737409,
+      "final_orientation_error_rad": 2.204077047535872,
+      "final_angle_error_rad": 0.486638642847538,
+      "paper_success": false,
+      "public_success": false,
+      "lift_target_success": false,
+      "ood_goal_success": false,
+      "strict_goal_success": false,
+      "trajectory_sha256": "638e5b0ad21b47fc89af9e270867400054d096eaa4b08c42c1d8c99e471129d3"
+    },
+    {
+      "episode_id": "box__normal__0002",
+      "state_shape": [
+        1561,
+        138
+      ],
+      "actions_r_shape": [
+        1560,
+        51
+      ],
+      "actions_l_shape": [
+        1560,
+        51
+      ],
+      "all_arrays_finite": true,
+      "trajectory_hash_matches_record": true,
+      "recomputed_primary_metrics_match_record": true,
+      "angle_goal_rad": 0.584507167339325,
+      "angle_start_rad": -1.2146414519520476e-05,
+      "angle_final_rad": 0.4301801323890686,
+      "angle_phase_net_change_rad": 0.4301922917366028,
+      "angle_phase_range_rad": 0.4386942982673645,
+      "base_start_position_error_m": 0.023371514839889456,
+      "base_start_orientation_error_rad": 0.14703666730095133,
+      "base_start_within_pose_thresholds": true,
+      "final_position_error_m": 0.025750965922102895,
+      "final_orientation_error_rad": 0.15882133781748373,
+      "final_angle_error_rad": 0.15432703495025635,
+      "paper_success": true,
+      "public_success": true,
+      "lift_target_success": false,
+      "ood_goal_success": false,
+      "strict_goal_success": false,
+      "trajectory_sha256": "f765610e106eb8985566b756825dec6babe0a4f8e00fa9cdce089401da3275ac"
+    },
+    {
+      "episode_id": "box__normal__0003",
+      "state_shape": [
+        1561,
+        138
+      ],
+      "actions_r_shape": [
+        1560,
+        51
+      ],
+      "actions_l_shape": [
+        1560,
+        51
+      ],
+      "all_arrays_finite": true,
+      "trajectory_hash_matches_record": true,
+      "recomputed_primary_metrics_match_record": true,
+      "angle_goal_rad": 0.5681114196777344,
+      "angle_start_rad": -1.6483561921631917e-05,
+      "angle_final_rad": 0.6080149412155151,
+      "angle_phase_net_change_rad": 0.6080314517021179,
+      "angle_phase_range_rad": 0.6091275811195374,
+      "base_start_position_error_m": 0.01726576007606867,
+      "base_start_orientation_error_rad": 0.23928568447510662,
+      "base_start_within_pose_thresholds": false,
+      "final_position_error_m": 0.017260041460625455,
+      "final_orientation_error_rad": 0.23839178483632198,
+      "final_angle_error_rad": 0.03990352153778076,
+      "paper_success": false,
+      "public_success": true,
+      "lift_target_success": false,
+      "ood_goal_success": false,
+      "strict_goal_success": false,
+      "trajectory_sha256": "394fba5f053ebc5f1e0cf4f373e77208522c8c0ac853db3e9ea6ad14464685d2"
+    },
+    {
+      "episode_id": "box__normal__0004",
+      "state_shape": [
+        1561,
+        138
+      ],
+      "actions_r_shape": [
+        1560,
+        51
+      ],
+      "actions_l_shape": [
+        1560,
+        51
+      ],
+      "all_arrays_finite": true,
+      "trajectory_hash_matches_record": true,
+      "recomputed_primary_metrics_match_record": true,
+      "angle_goal_rad": 0.5674387216567993,
+      "angle_start_rad": -0.00024236920580733567,
+      "angle_final_rad": 0.00011602324229897931,
+      "angle_phase_net_change_rad": 0.0003583924553822726,
+      "angle_phase_range_rad": 0.1137995794415474,
+      "base_start_position_error_m": 0.05057691194879785,
+      "base_start_orientation_error_rad": 0.4803010997519222,
+      "base_start_within_pose_thresholds": false,
+      "final_position_error_m": 0.04774919060885877,
+      "final_orientation_error_rad": 0.5084071019899642,
+      "final_angle_error_rad": 0.5673226984145003,
+      "paper_success": false,
+      "public_success": false,
+      "lift_target_success": true,
+      "ood_goal_success": false,
+      "strict_goal_success": false,
+      "trajectory_sha256": "bbe51d83f29dd236be05387fee43ead142c41eabec863783342e95274ef45598"
+    },
+    {
+      "episode_id": "box__normal__0005",
+      "state_shape": [
+        1561,
+        138
+      ],
+      "actions_r_shape": [
+        1560,
+        51
+      ],
+      "actions_l_shape": [
+        1560,
+        51
+      ],
+      "all_arrays_finite": true,
+      "trajectory_hash_matches_record": true,
+      "recomputed_primary_metrics_match_record": true,
+      "angle_goal_rad": 0.5756973028182983,
+      "angle_start_rad": -0.0002770610444713384,
+      "angle_final_rad": 0.7636385560035706,
+      "angle_phase_net_change_rad": 0.7639155983924866,
+      "angle_phase_range_rad": 0.8665454387664795,
+      "base_start_position_error_m": 0.13244917359625444,
+      "base_start_orientation_error_rad": 1.0148044640356546,
+      "base_start_within_pose_thresholds": false,
+      "final_position_error_m": 0.12776545308884088,
+      "final_orientation_error_rad": 0.9731418008210562,
+      "final_angle_error_rad": 0.18794125318527222,
+      "paper_success": false,
+      "public_success": false,
+      "lift_target_success": false,
+      "ood_goal_success": false,
+      "strict_goal_success": false,
+      "trajectory_sha256": "94a398909c703a78391d5f9cadcd383c013f9365712f51ce451c1b0bff90eadb"
+    },
+    {
+      "episode_id": "box__normal__0006",
+      "state_shape": [
+        1561,
+        138
+      ],
+      "actions_r_shape": [
+        1560,
+        51
+      ],
+      "actions_l_shape": [
+        1560,
+        51
+      ],
+      "all_arrays_finite": true,
+      "trajectory_hash_matches_record": true,
+      "recomputed_primary_metrics_match_record": true,
+      "angle_goal_rad": 0.592365562915802,
+      "angle_start_rad": -2.7070211217505857e-05,
+      "angle_final_rad": 0.7268337607383728,
+      "angle_phase_net_change_rad": 0.7268608212471008,
+      "angle_phase_range_rad": 0.7628602385520935,
+      "base_start_position_error_m": 0.014548150145415488,
+      "base_start_orientation_error_rad": 0.050401328104539254,
+      "base_start_within_pose_thresholds": true,
+      "final_position_error_m": 0.015080647484440528,
+      "final_orientation_error_rad": 0.05404795901416541,
+      "final_angle_error_rad": 0.1344681978225708,
+      "paper_success": true,
+      "public_success": true,
+      "lift_target_success": false,
+      "ood_goal_success": false,
+      "strict_goal_success": false,
+      "trajectory_sha256": "c092ceec679f8e826d22f8d7c499785751b5f78661141d5f64d1ef4536c9dafe"
+    },
+    {
+      "episode_id": "box__normal__0007",
+      "state_shape": [
+        1561,
+        138
+      ],
+      "actions_r_shape": [
+        1560,
+        51
+      ],
+      "actions_l_shape": [
+        1560,
+        51
+      ],
+      "all_arrays_finite": true,
+      "trajectory_hash_matches_record": true,
+      "recomputed_primary_metrics_match_record": true,
+      "angle_goal_rad": 0.5861538052558899,
+      "angle_start_rad": 3.142774820327759,
+      "angle_final_rad": 3.141634941101074,
+      "angle_phase_net_change_rad": -0.0011398792266845703,
+      "angle_phase_range_rad": 0.04729199409484863,
+      "base_start_position_error_m": 0.8185487148731301,
+      "base_start_orientation_error_rad": 1.9114999790024119,
+      "base_start_within_pose_thresholds": false,
+      "final_position_error_m": 0.8211844671379986,
+      "final_orientation_error_rad": 1.8479566018166216,
+      "final_angle_error_rad": 2.5554811358451843,
+      "paper_success": false,
+      "public_success": false,
+      "lift_target_success": false,
+      "ood_goal_success": false,
+      "strict_goal_success": false,
+      "trajectory_sha256": "b027c02f70b1e0f39046e159c7ff5e477ec3365b3e46e8ad953fc74375190b58"
+    }
+  ]
+}

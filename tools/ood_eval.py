@@ -2,7 +2,7 @@
 """Plan, run, resume, replay and summarize ArtiGrasp OOD experiments.
 
 Run from any directory; no C++ changes or additional Python packages are needed
-beyond the existing paper environment. See docs/OOD_MULTIAXIS_DESIGN.md.
+beyond the existing paper environment. See docs/OOD_FIVE.md.
 """
 
 import argparse
@@ -22,7 +22,7 @@ from ood_suite.targets import build_plan, load_config
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_CONFIG = REPO_ROOT / "configs/ood_multiaxis.json"
+DEFAULT_CONFIG = REPO_ROOT / "configs/ood_five.json"
 
 
 def _positive(value):
@@ -37,7 +37,7 @@ def _plan_options(parser):
     parser.add_argument("--output", type=Path, required=True, help="New experiment directory")
     parser.add_argument("--objects", nargs="+", help="Default: all ten released objects")
     parser.add_argument("--profiles", nargs="+", help="Target profiles; default uses the config's default_suite or all profiles")
-    parser.add_argument("--suite", help="Named profile set from config (default config: all/core = eight combinations)")
+    parser.add_argument("--suite", help="Named profile set (default: five requested OOD conditions)")
     parser.add_argument("--samples", type=_positive, help="Samples per object AND condition; default 100")
     parser.add_argument("--seed", type=int)
     parser.add_argument("--split", choices=("test", "train"))
@@ -163,14 +163,22 @@ def create_plan(args):
     plan = build_plan(REPO_ROOT, config, objects=args.objects, profiles=args.profiles,
                       samples=args.samples, seed=args.seed, split=args.split,
                       suite=getattr(args, "suite", None))
+    constraints = None
+    if config.get("evaluation_protocol") == "five_v1":
+        from ood_suite.constraints import validate_plan
+        constraints = validate_plan(plan, REPO_ROOT)
     for option, name in (("batch_size", "batch_size"), ("num_threads", "num_threads"), ("device", "device")):
         if getattr(args, option, None) is not None:
             plan["config"].setdefault("runtime", {})[name] = getattr(args, option)
     # Hash before creating files so incomplete input cannot leave a misleading plan.
     provenance = code_fingerprint(REPO_ROOT)
     provenance["input_sha256"] = _asset_hashes(plan)
+    if constraints is not None:
+        provenance["input_sha256"].update(constraints["mesh_sha256"])
     provenance["created_utc"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
     write_json(output / "plan.json", plan)
+    if constraints is not None:
+        write_json(output / "physics_constraints.json", constraints)
     provenance["plan_sha256"] = file_sha256(output / "plan.json")
     write_json(output / "provenance.json", provenance)
     print("Plan: {} episodes -> {}".format(len(plan["episodes"]), output / "plan.json"), flush=True)

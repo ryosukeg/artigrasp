@@ -25,14 +25,14 @@ from tools.tests.test_ood_runtime import _data, _fake_rotations, EventEnvironmen
 
 class FactorialTargetTests(unittest.TestCase):
     def setUp(self):
-        self.config = load_config(ood_eval.DEFAULT_CONFIG)
+        self.config = load_config(ROOT / "configs/ood_multiaxis.json")
 
     def plan(self, objects=None, samples=2, **kwargs):
         objects = objects or self.config["objects"]
         return build_plan(ROOT, self.config, objects=objects, samples=samples,
                           label_sets={name: label_set(name) for name in objects}, **kwargs)
 
-    def test_default_is_exactly_eight_combinations_and_8000_trials(self):
+    def test_legacy_factorial_is_exactly_eight_combinations_and_8000_trials(self):
         self.assertEqual(self.config["evaluation_protocol"], "factorial_v1")
         self.assertEqual(len(self.config["profiles"]), 8)
         masks = {tuple(value["factor_flags"][key] for key in ("horizontal", "lift", "articulation"))
@@ -144,7 +144,7 @@ class FactorialTargetTests(unittest.TestCase):
 
 class FactorialReportTests(unittest.TestCase):
     def setUp(self):
-        self.config = load_config(ood_eval.DEFAULT_CONFIG)
+        self.config = load_config(ROOT / "configs/ood_multiaxis.json")
         self.plan = build_plan(ROOT, self.config, objects=["box"], samples=2,
                                label_sets={"box": label_set("box")})
         self.completed = {item["episode_id"]: dict(item, valid=True, paper_success=True, public_success=True,
